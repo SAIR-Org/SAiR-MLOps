@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>User Profile</title>
+</head>
+<body>
+  <h2>User Profile</h2>
+
+  <form id="profileForm">
+    <input id="name" placeholder="Name" required />
+    <input id="email" placeholder="Email" required />
+    <button type="submit">Save</button>
+  </form>
+
+  <pre id="output"></pre>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api/profile';
+
+    async function loadProfile() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      document.getElementById('name').value = data.name || '';
+      document.getElementById('email').value = data.email || '';
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      });
+
+      document.getElementById('output').textContent =
+        JSON.stringify(await res.json(), null, 2);
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
