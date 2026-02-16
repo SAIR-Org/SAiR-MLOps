@@ -1,0 +1,32 @@
+artifact_path: file:///home/silva/SILVA.AI/Projects/MLOps/DDODS/4_Mlflow_exp_tracking/mlruns/326774144943341726/models/m-db33aa13485245dfb911466d00c00d8e/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.11
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+is_signature_from_type_hint: false
+mlflow_version: 3.2.0
+model_id: m-db33aa13485245dfb911466d00c00d8e
+model_size_bytes: 169176
+model_uuid: m-db33aa13485245dfb911466d00c00d8e
+prompts: null
+run_id: 94d7b467485f4927bbd2d7c7788d20f3
+saved_input_example_info:
+  artifact_path: input_example.json
+  serving_input_path: serving_input_example.json
+  type: ndarray
+signature:
+  inputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1, 4]}}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-02-15 22:49:33.213113'

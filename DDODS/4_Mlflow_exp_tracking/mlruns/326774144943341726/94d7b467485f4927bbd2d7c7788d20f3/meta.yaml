@@ -1,0 +1,14 @@
+artifact_uri: file:///home/silva/SILVA.AI/Projects/MLOps/DDODS/4_Mlflow_exp_tracking/mlruns/326774144943341726/94d7b467485f4927bbd2d7c7788d20f3/artifacts
+end_time: 1771195775563
+entry_point_name: ''
+experiment_id: '326774144943341726'
+lifecycle_stage: active
+run_id: 94d7b467485f4927bbd2d7c7788d20f3
+run_name: RandomForest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771195773049
+status: 3
+tags: []
+user_id: silva

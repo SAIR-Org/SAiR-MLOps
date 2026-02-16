@@ -1,0 +1,14 @@
+artifact_uri: file:///home/silva/SILVA.AI/Projects/MLOps/DDODS/4_Mlflow_exp_tracking/mlruns/326774144943341726/185bc5ef53804c519bad1216a508b641/artifacts
+end_time: 1771195561221
+entry_point_name: ''
+experiment_id: '326774144943341726'
+lifecycle_stage: active
+run_id: 185bc5ef53804c519bad1216a508b641
+run_name: LogisticRegression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771195557548
+status: 3
+tags: []
+user_id: silva
