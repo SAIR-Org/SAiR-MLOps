@@ -1,0 +1,9 @@
+{
+  "n_customers_total": 400,
+  "n_customers_with_obs_purchases": 363,
+  "n_features_rows": 400,
+  "churn_rate": 0.3075,
+  "obs_window_start": "2023-12-09",
+  "cutoff": "2024-06-26",
+  "label_window_end": "2024-08-25"
+}

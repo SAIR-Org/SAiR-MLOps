@@ -1,0 +1,29 @@
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_setup.py:_flush():81] Current SDK version is 0.25.0
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_setup.py:_flush():81] Configure stats pid to 1839103
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_init.py:setup_run_log_directory():717] Logging user logs to /home/silva/SILVA.AI/Projects/MLOps/DDODS/5_Weights_and_Biases/wandb/run-20260217_192117-yhtjfmmx/logs/debug.log
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_init.py:setup_run_log_directory():718] Logging internal logs to /home/silva/SILVA.AI/Projects/MLOps/DDODS/5_Weights_and_Biases/wandb/run-20260217_192117-yhtjfmmx/logs/debug-internal.log
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_init.py:monkeypatch_ipython():636] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x7c267751ac30>
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_init.py:init():844] calling init triggers
+2026-02-17 19:21:17,727 INFO    MainThread:1839103 [wandb_init.py:init():849] wandb.init called with sweep_config: {}
+config: {'_wandb': {}}
+2026-02-17 19:21:17,728 INFO    MainThread:1839103 [wandb_init.py:init():892] starting backend
+2026-02-17 19:21:17,989 INFO    MainThread:1839103 [wandb_init.py:init():895] sending inform_init request
+2026-02-17 19:21:17,995 INFO    MainThread:1839103 [wandb_init.py:init():903] backend started and connected
+2026-02-17 19:21:18,012 INFO    MainThread:1839103 [wandb_run.py:_label_probe_notebook():1333] probe notebook
+2026-02-17 19:21:18,012 INFO    MainThread:1839103 [wandb_init.py:init():973] updated telemetry
+2026-02-17 19:21:18,086 INFO    MainThread:1839103 [wandb_init.py:init():997] communicating run to backend with 90.0 second timeout
+2026-02-17 19:21:18,957 INFO    MainThread:1839103 [wandb_init.py:init():1042] starting run threads in backend
+2026-02-17 19:21:19,106 INFO    MainThread:1839103 [wandb_run.py:_console_start():2524] atexit reg
+2026-02-17 19:21:19,106 INFO    MainThread:1839103 [wandb_run.py:_redirect():2373] redirect: wrap_raw
+2026-02-17 19:21:19,106 INFO    MainThread:1839103 [wandb_run.py:_redirect():2442] Wrapping output streams.
+2026-02-17 19:21:19,106 INFO    MainThread:1839103 [wandb_run.py:_redirect():2465] Redirects installed.
+2026-02-17 19:21:19,111 INFO    MainThread:1839103 [wandb_init.py:init():1082] run started, returning control to user process
+2026-02-17 19:21:28,847 INFO    MainThread:1839103 [wandb_run.py:_finish():2291] finishing run silvapi1994-karabuk-university/sales-forecasting/yhtjfmmx
+2026-02-17 19:21:29,039 INFO    MainThread:1839103 [jupyter.py:save_history():435] not saving jupyter history
+2026-02-17 19:21:29,039 INFO    MainThread:1839103 [jupyter.py:save_ipynb():362] not saving jupyter notebook
+2026-02-17 19:21:29,039 INFO    MainThread:1839103 [wandb_init.py:_jupyter_teardown():621] cleaning up jupyter logic
+2026-02-17 19:21:29,039 INFO    MainThread:1839103 [wandb_run.py:_atexit_cleanup():2490] got exitcode: 1
+2026-02-17 19:21:29,039 INFO    MainThread:1839103 [wandb_run.py:_restore():2472] restore
+2026-02-17 19:21:29,039 INFO    MainThread:1839103 [wandb_run.py:_restore():2478] restore done
+2026-02-17 19:21:30,698 INFO    MainThread:1839103 [wandb_run.py:_footer_sync_info():3868] logging synced files
