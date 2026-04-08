@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Feast Feature Store — Mastery Guide</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d2e;
+    --surface2: #232639;
+    --border: #2e3250;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --accent4: #ffd166;
+    --text: #e2e8f0;
+    --text-muted: #8892a4;
+    --code-bg: #0d1117;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0f1117 0%, #1a1d2e 50%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 32px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(108,99,255,0.15) 0%, transparent 70%);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.4);
+    color: #a5a0ff;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 30%, #6c63ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 17px;
+    max-width: 620px;
+    margin: 0 auto 32px;
+  }
+  .hero-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 40px auto;
+    max-width: 960px;
+    margin-left: auto; margin-right: auto;
+  }
+  .toc h3 { color: var(--accent); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; }
+  .toc a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .toc a:hover { color: var(--accent); }
+
+  section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h2 .num {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: rgba(108,99,255,0.2);
+    border: 1px solid rgba(108,99,255,0.4);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  h3 { font-size: 18px; font-weight: 600; margin: 28px 0 12px; color: #c9d1e0; }
+  p { color: var(--text-muted); margin-bottom: 14px; }
+  strong { color: var(--text); }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace; }
+  .inline-code {
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.25);
+    color: #a5a0ff;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  /* syntax highlight */
+  .kw { color: #ff79c6; }
+  .fn { color: #50fa7b; }
+  .st { color: #f1fa8c; }
+  .cm { color: #6272a4; font-style: italic; }
+  .nu { color: #bd93f9; }
+  .cl { color: #8be9fd; }
+  .va { color: #ffb86c; }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-left: 4px solid;
+    font-size: 14px;
+  }
+  .callout-info { background: rgba(108,99,255,0.08); border-color: var(--accent); }
+  .callout-warning { background: rgba(255,209,102,0.07); border-color: var(--accent4); }
+  .callout-success { background: rgba(0,212,170,0.07); border-color: var(--accent2); }
+  .callout-danger { background: rgba(255,107,107,0.08); border-color: var(--accent3); }
+  .callout .callout-title { font-weight: 700; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .callout-info .callout-title { color: var(--accent); }
+  .callout-warning .callout-title { color: var(--accent4); }
+  .callout-success .callout-title { color: var(--accent2); }
+  .callout-danger .callout-title { color: var(--accent3); }
+
+  /* ── DIAGRAMS ── */
+  .diagram {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+
+  /* Architecture boxes */
+  .arch {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .arch-row { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
+  .arch-box {
+    flex: 1;
+    min-width: 160px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-align: center;
+  }
+  .arch-box .icon { font-size: 24px; margin-bottom: 8px; }
+  .arch-box .title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .arch-box .desc { font-size: 12px; color: var(--text-muted); }
+  .arch-box.highlight { border-color: var(--accent); background: rgba(108,99,255,0.08); }
+  .arch-box.green { border-color: var(--accent2); background: rgba(0,212,170,0.06); }
+  .arch-box.yellow { border-color: var(--accent4); background: rgba(255,209,102,0.06); }
+  .arch-box.red { border-color: var(--accent3); background: rgba(255,107,107,0.06); }
+
+  .arrow {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 22px;
+    line-height: 1;
+  }
+  .arrow-row { display: flex; gap: 12px; align-items: center; }
+  .arrow-row .arrow { flex: 1; text-align: center; }
+
+  /* Timeline diagram */
+  .timeline {
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text-muted);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+  .tl-line { white-space: pre; }
+  .tl-accent { color: var(--accent); }
+  .tl-green { color: var(--accent2); }
+  .tl-red { color: var(--accent3); }
+  .tl-yellow { color: var(--accent4); }
+
+  /* Concept cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin: 20px 0; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .card .card-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .card .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  /* Comparison table */
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td { border: 1px solid var(--border); padding: 10px 16px; color: var(--text-muted); }
+  tr:hover td { background: var(--surface); }
+
+  /* Step list */
+  .steps { display: flex; flex-direction: column; gap: 2px; margin: 20px 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 32px; height: 32px;
+    background: rgba(108,99,255,0.2);
+    border: 1px solid rgba(108,99,255,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body .step-title { font-weight: 600; margin-bottom: 4px; }
+  .step-body .step-desc { font-size: 13px; color: var(--text-muted); }
+
+  /* Flow diagram */
+  .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 20px 0; }
+  .flow-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 110px;
+  }
+  .flow-box.accent { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,0.1); }
+  .flow-box.green { border-color: var(--accent2); color: var(--accent2); background: rgba(0,212,170,0.08); }
+  .flow-box.yellow { border-color: var(--accent4); color: var(--accent4); background: rgba(255,209,102,0.08); }
+  .flow-box.red { border-color: var(--accent3); color: var(--accent3); background: rgba(255,107,107,0.08); }
+  .flow-arrow { padding: 0 8px; color: var(--text-muted); font-size: 18px; }
+
+  /* Key insight boxes */
+  .insight {
+    background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(0,212,170,0.05));
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    font-size: 15px;
+    color: var(--text);
+    font-style: italic;
+  }
+  .insight::before { content: '"'; font-size: 40px; color: var(--accent); line-height: 1; display: block; margin-bottom: -10px; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 32px; }
+    h2 { font-size: 22px; }
+    .flow { flex-direction: column; align-items: flex-start; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">MLOps Mastery Series</div>
+  <h1>Feast Feature Store</h1>
+  <p>The philosophy, architecture, and complete pipeline — explained through a real Telco Churn example.</p>
+  <div class="hero-tags">
+    <span class="tag">Feature Store</span>
+    <span class="tag">Point-in-Time Joins</span>
+    <span class="tag">Training/Serving Parity</span>
+    <span class="tag">Offline + Online Store</span>
+    <span class="tag">Data Leakage Prevention</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- TOC -->
+<div class="toc">
+  <h3>Contents</h3>
+  <ol>
+    <li><a href="#problem">The Problem Feast Solves</a></li>
+    <li><a href="#philosophy">The Feast Philosophy</a></li>
+    <li><a href="#architecture">Architecture: How It's Built</a></li>
+    <li><a href="#concepts">Core Concepts</a></li>
+    <li><a href="#pipeline">The Full Pipeline — Step by Step</a></li>
+    <li><a href="#leakage">Point-in-Time Joins & Leakage</a></li>
+    <li><a href="#serving">Offline vs Online Serving</a></li>
+    <li><a href="#mental-model">Mental Model Summary</a></li>
+  </ol>
+</div>
+
+<!-- SECTION 1: THE PROBLEM -->
+<section id="problem">
+  <h2><span class="num">1</span> The Problem Feast Solves</h2>
+  <p>Before Feast, ML teams suffered from a set of recurring, expensive problems. Understanding these problems is the key to understanding <em>why</em> Feast exists.</p>
+
+  <h3>Problem 1 — Training/Serving Skew</h3>
+  <p>This is the most dangerous problem in production ML. Your model trains on data computed one way, but at serving time the same features are computed differently. The model works in notebooks but fails silently in production.</p>
+
+  <div class="diagram">
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-box red">
+          <div class="icon">🧑‍💻</div>
+          <div class="title">Data Scientist</div>
+          <div class="desc">Computes features in pandas during training</div>
+        </div>
+        <div class="arch-box red">
+          <div class="icon">⚙️</div>
+          <div class="title">Engineer</div>
+          <div class="desc">Re-implements same features in Java/Go for serving</div>
+        </div>
+      </div>
+      <div class="arrow">⚠️ Two implementations = silent divergence = model degrades in prod</div>
+    </div>
+  </div>
+
+  <h3>Problem 2 — Feature Duplication Across Teams</h3>
+  <p>Team A builds "customer lifetime value." Team B independently builds the same thing. No discoverability. No reuse. Every team reinvents the wheel.</p>
+
+  <h3>Problem 3 — Data Leakage in Training</h3>
+  <p>When building training datasets by simple SQL joins, it's easy to accidentally include feature values that were updated <em>after</em> the label event. The model trains on future data, gets great metrics, but fails in production because that data doesn't exist yet at prediction time.</p>
+
+  <h3>Problem 4 — Low-Latency Serving is Hard</h3>
+  <p>Features computed offline (batch) need to be available in milliseconds at serving time. Building and maintaining a pipeline from offline computation → online cache → API is significant infrastructure work.</p>
+
+  <div class="callout callout-info">
+    <div class="callout-title">Core Insight</div>
+    Feast is a <strong>centralized contract</strong> between the offline world (training) and the online world (serving). Define a feature once, use it everywhere, safely.
+  </div>
+</section>
+
+<!-- SECTION 2: PHILOSOPHY -->
+<section id="philosophy">
+  <h2><span class="num">2</span> The Feast Philosophy</h2>
+
+  <div class="insight">
+    A feature store is not a database. It is a <strong>time-aware, entity-centric view of your data</strong> — the same view at training time and serving time.
+  </div>
+
+  <h3>Three Core Beliefs</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">⏱️</div>
+      <div class="card-title">Time is First-Class</div>
+      <div class="card-desc">Every feature value has a timestamp. Feast never gives you a feature value that didn't exist at the moment of prediction. This is the foundation of leakage prevention.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <div class="card-title">Define Once, Use Everywhere</div>
+      <div class="card-desc">Features are defined in one place. Training pipelines and serving systems both read from the same definition. No drift, no divergence.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <div class="card-title">Serve at Any Latency</div>
+      <div class="card-desc">Batch (offline) features for training. Materialized (online) features for millisecond serving. The same feature, two access patterns.</div>
+    </div>
+  </div>
+
+  <h3>What Feast Is — and Is Not</h3>
+  <table>
+    <tr>
+      <th>Feast IS</th>
+      <th>Feast is NOT</th>
+    </tr>
+    <tr>
+      <td>A registry of feature definitions</td>
+      <td>A feature computation engine</td>
+    </tr>
+    <tr>
+      <td>A point-in-time correct retrieval layer</td>
+      <td>A replacement for your data warehouse</td>
+    </tr>
+    <tr>
+      <td>A bridge between offline and online stores</td>
+      <td>A streaming pipeline (by default)</td>
+    </tr>
+    <tr>
+      <td>A contract for training/serving parity</td>
+      <td>An ETL tool</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">Common Misconception</div>
+    Feast does not compute features. <strong>You compute features. Feast stores, versions, and serves them.</strong> The computation (pandas, Spark, SQL) happens upstream — Feast takes the output.
+  </div>
+</section>
+
+<!-- SECTION 3: ARCHITECTURE -->
+<section id="architecture">
+  <h2><span class="num">3</span> Architecture: How It's Built</h2>
+
+  <div class="arch">
+    <div class="arch-row">
+      <div class="arch-box yellow">
+        <div class="icon">📁</div>
+        <div class="title">Raw Data Sources</div>
+        <div class="desc">CSV, Parquet, BigQuery, Snowflake, Redshift</div>
+      </div>
+    </div>
+    <div class="arrow">↓ feast apply registers definitions</div>
+    <div class="arch-row">
+      <div class="arch-box highlight">
+        <div class="icon">📋</div>
+        <div class="title">Registry</div>
+        <div class="desc">metadata store: entities, feature views, services (registry.db locally)</div>
+      </div>
+    </div>
+    <div class="arrow">↓ two access paths</div>
+    <div class="arch-row">
+      <div class="arch-box green">
+        <div class="icon">🗄️</div>
+        <div class="title">Offline Store</div>
+        <div class="desc">Historical retrieval with point-in-time joins. For training. (file, BigQuery, Redshift)</div>
+      </div>
+      <div class="arch-box red">
+        <div class="icon">⚡</div>
+        <div class="title">Online Store</div>
+        <div class="desc">Latest feature values, millisecond latency. For serving. (SQLite, Redis, DynamoDB)</div>
+      </div>
+    </div>
+    <div class="arrow-row">
+      <div class="arrow" style="flex:1">↓ get_historical_features()</div>
+      <div class="arrow" style="flex:1">↓ materialize_incremental() → get_online_features()</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-box">
+        <div class="icon">🤖</div>
+        <div class="title">Training Dataset</div>
+        <div class="desc">Leakage-safe, point-in-time correct features + labels</div>
+      </div>
+      <div class="arch-box">
+        <div class="icon">🌐</div>
+        <div class="title">Prediction API</div>
+        <div class="desc">Look up features by entity ID in real-time</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>In This Demo (Local Setup)</h3>
+  <pre><span class="va">feature_store.yaml</span>:
+
+<span class="cl">project</span>: <span class="st">telco_churn</span>
+<span class="cl">registry</span>: <span class="st">"registry.db"</span>          <span class="cm"># SQLite file tracking all definitions</span>
+<span class="cl">provider</span>: <span class="st">local</span>               <span class="cm"># no cloud infra needed</span>
+
+<span class="cl">offline_store</span>:
+  <span class="cl">type</span>: <span class="st">file</span>                    <span class="cm"># reads from local parquet files</span>
+
+<span class="cl">online_store</span>:
+  <span class="cl">type</span>: <span class="st">sqlite</span>                  <span class="cm"># SQLite for low-latency local serving</span>
+  <span class="cl">path</span>: <span class="st">"online_store.db"</span></pre>
+</section>
+
+<!-- SECTION 4: CORE CONCEPTS -->
+<section id="concepts">
+  <h2><span class="num">4</span> Core Concepts</h2>
+
+  <h3>Entity</h3>
+  <p>The <strong>thing</strong> your features describe. The primary key of your feature store. In this demo it's a customer.</p>
+  <pre><span class="va">customer</span> = <span class="cl">Entity</span>(
+    name=<span class="st">"customer_id"</span>,
+    join_keys=[<span class="st">"customer_id"</span>],   <span class="cm"># the column used to join</span>
+    value_type=<span class="cl">ValueType</span>.STRING,
+)</pre>
+  <div class="callout callout-info">
+    <div class="callout-title">Think of it this way</div>
+    Entity is the "who" — customer, product, driver, session. Every feature you store belongs to an entity.
+  </div>
+
+  <h3>FileSource (Data Source)</h3>
+  <p>Tells Feast <em>where</em> the raw feature data lives and which column is the event timestamp.</p>
+  <pre><span class="va">source</span> = <span class="cl">FileSource</span>(
+    path=<span class="st">"data/telco_features.parquet"</span>,
+    timestamp_field=<span class="st">"event_timestamp"</span>,   <span class="cm"># when was this feature value observed?</span>
+    created_timestamp_column=<span class="st">"created_at"</span>,  <span class="cm"># when was it ingested? (used for dedup)</span>
+)</pre>
+  <p><span class="inline-code">created_timestamp_column</span> is important when you have late-arriving data or backfills — Feast uses it to pick the most recently <em>ingested</em> value if multiple records exist for the same timestamp.</p>
+
+  <h3>FeatureView</h3>
+  <p>The central concept. It binds an entity + a data source + a schema together, with a TTL (how long a feature value is considered valid).</p>
+  <pre><span class="va">customer_stats</span> = <span class="cl">FeatureView</span>(
+    name=<span class="st">"customer_stats"</span>,
+    entities=[<span class="va">customer</span>],
+    ttl=<span class="cl">timedelta</span>(days=<span class="nu">365</span>),   <span class="cm"># feature expires after 365 days</span>
+    schema=[
+        <span class="cl">Field</span>(name=<span class="st">"tenure"</span>,         dtype=<span class="cl">Float32</span>),
+        <span class="cl">Field</span>(name=<span class="st">"MonthlyCharges"</span>, dtype=<span class="cl">Float32</span>),
+        <span class="cm"># ... more fields</span>
+    ],
+    source=<span class="va">source</span>,
+    online=<span class="kw">True</span>,    <span class="cm"># allow materialization to online store</span>
+)</pre>
+
+  <h3>FeatureService</h3>
+  <p>A named group of features for a specific use case — like a "serving contract." Lets you version what features a model uses.</p>
+  <pre><span class="va">svc</span> = <span class="cl">FeatureService</span>(
+    name=<span class="st">"customer_stats_service"</span>,
+    features=[<span class="va">customer_stats</span>]   <span class="cm"># reference the whole view, or specific fields</span>
+)</pre>
+
+  <h3>feast apply</h3>
+  <p>Registers all definitions into the registry. Think of it like a database migration — it creates the schema without moving data.</p>
+  <pre><span class="va">store</span> = <span class="cl">FeatureStore</span>(repo_path=<span class="st">str</span>(<span class="va">REPO_DIR</span>))
+<span class="va">store</span>.<span class="fn">apply</span>([<span class="va">customer</span>, <span class="va">customer_stats</span>])</pre>
+
+  <h3>TTL (Time-to-Live)</h3>
+  <p>How stale a feature value can be before Feast ignores it. If a customer has no feature record within the TTL window before the query timestamp, Feast returns null rather than a misleadingly old value.</p>
+  <table>
+    <tr><th>TTL Value</th><th>Meaning</th></tr>
+    <tr><td><code>timedelta(days=365)</code></td><td>Accept feature values up to 1 year old</td></tr>
+    <tr><td><code>timedelta(days=1)</code></td><td>Strict — only today's values count</td></tr>
+    <tr><td><code>timedelta(0)</code></td><td>No limit — always return the latest value</td></tr>
+  </table>
+</section>
+
+<!-- SECTION 5: THE PIPELINE -->
+<section id="pipeline">
+  <h2><span class="num">5</span> The Full Pipeline — Step by Step</h2>
+
+  <div class="flow">
+    <div class="flow-box accent">1. Setup Repo</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">2. Load &amp; Clean</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box yellow">3. Add Timestamps</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">4. Encode</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">5. Save Parquet</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box accent">6. feast apply</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box green">7. Historical Fetch</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box yellow">8. Train</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box red">9. Materialize</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box red">10. Online Serve</div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Bootstrap the Feast Repo</div>
+        <div class="step-desc">Create directory structure, write <code>feature_store.yaml</code>. Wipe and recreate for a clean slate each run.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Load &amp; Clean Data</div>
+        <div class="step-desc">Load Telco CSV, fix column names, coerce numeric types, drop nulls, create binary <code>label</code> from "Churn" column.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Simulate Timestamps (Demo-only)</div>
+        <div class="step-desc">Static CSV has no timestamps. Simulate <code>feature_ts</code> (when features were observed), <code>label_ts</code> (30 days later — when churn is known), <code>created_at</code> (ingestion lag). In production, real timestamps exist.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Encode Categoricals for Feast Storage</div>
+        <div class="step-desc">Feast's file/SQLite stores work with numeric types. LabelEncode all categorical columns. Note: in production you'd store raw + encode at model pipeline time.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Save to Parquet</div>
+        <div class="step-desc">Two parquet files: <code>telco_features.parquet</code> (feature values + <code>event_timestamp</code>) and <code>entity_labels.parquet</code> (entity IDs + label timestamps + labels). These are the inputs Feast reads from.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Define &amp; Apply Feast Objects</div>
+        <div class="step-desc">Define <code>Entity</code>, <code>FileSource</code>, <code>FeatureView</code>. Run <code>store.apply()</code> to register them in the registry. No data is moved yet — only metadata.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-body">
+        <div class="step-title">get_historical_features() — Point-in-Time Join</div>
+        <div class="step-desc">Pass entity DataFrame with <code>label_ts</code> as the join timestamp. Feast retrieves only feature values that existed before each label timestamp. This is the leakage-safe training set.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">8</div>
+      <div class="step-body">
+        <div class="step-title">Time-Based Split + Train</div>
+        <div class="step-desc">Split by timestamp quantile (70/15/15 train/val/test). Train logistic regression with sklearn pipeline. Tune classification threshold on validation set.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">9</div>
+      <div class="step-body">
+        <div class="step-title">Materialize to Online Store</div>
+        <div class="step-desc"><code>store.materialize_incremental()</code> reads from offline parquet, writes latest feature values per entity into SQLite online store. Only the most recent value per customer is kept.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">10</div>
+      <div class="step-body">
+        <div class="step-title">get_online_features() — Serving</div>
+        <div class="step-desc">Look up features by customer ID in milliseconds. Simulates what a production prediction API does. Returns the materialized feature row for each entity.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: POINT IN TIME -->
+<section id="leakage">
+  <h2><span class="num">6</span> Point-in-Time Joins &amp; Leakage Prevention</h2>
+  <p>This is the most important technical concept in Feast. Understand this and everything else follows.</p>
+
+  <h3>The Leakage Problem Visualized</h3>
+
+  <div class="timeline">
+<span class="tl-line">  Customer A timeline:</span>
+<span class="tl-line"> </span>
+<span class="tl-line">  Jan 1          Jan 15          Feb 1</span>
+<span class="tl-line">    │                │               │</span>
+<span class="tl-line">    ▼                ▼               ▼</span>
+<span class="tl-line"><span class="tl-green">  [feature recorded]  [customer churns]  [support ticket filed]</span></span>
+<span class="tl-line"> </span>
+<span class="tl-line">  <span class="tl-red">✗ NAIVE JOIN (leaky):</span>
+<span class="tl-line">    SELECT * FROM features JOIN labels ON customer_id</span></span>
+<span class="tl-line">    → Feb 1 support ticket appears as a feature for a Jan 1 prediction</span>
+<span class="tl-line">    → Model trains on data it could never have in production</span>
+<span class="tl-line">    → Inflated accuracy, fails silently in prod</span>
+<span class="tl-line"> </span>
+<span class="tl-line">  <span class="tl-green">✓ POINT-IN-TIME JOIN (Feast):</span></span>
+<span class="tl-line">    For label_ts = Feb 1 → only use features with event_timestamp ≤ Feb 1</span>
+<span class="tl-line">    AND event_timestamp > (Feb 1 - TTL)</span>
+<span class="tl-line">    → Jan 1 features are used. Feb 1 ticket is excluded.</span>
+<span class="tl-line">    → Perfectly reproduces what the model would see in production.</span>
+  </div>
+
+  <h3>How get_historical_features() Works</h3>
+  <pre><span class="va">entity_df</span> = <span class="va">pd</span>.<span class="fn">read_parquet</span>(<span class="va">entity_label_path</span>)
+<span class="cm"># entity_df has: customer_id | event_timestamp (= label_ts) | label</span>
+
+<span class="va">training_df</span> = <span class="va">store</span>.<span class="fn">get_historical_features</span>(
+    entity_df=<span class="va">entity_df</span>,
+    features=[<span class="st">f"customer_stats:{f}"</span> <span class="kw">for</span> <span class="va">f</span> <span class="kw">in</span> <span class="va">all_features</span>],
+).<span class="fn">to_df</span>()</pre>
+
+  <p>For each row in <span class="inline-code">entity_df</span>, Feast finds the most recent feature record in the FeatureView where:</p>
+  <pre>feature_ts ≤ entity_event_timestamp  AND  feature_ts ≥ (entity_event_timestamp - TTL)</pre>
+
+  <h3>Why Time-Based Split Matters Too</h3>
+  <p>After getting the training set, we split by time — not random shuffle:</p>
+  <pre><span class="va">ts</span> = <span class="va">training_df</span>[<span class="st">"event_timestamp"</span>]
+<span class="va">q_train</span> = <span class="va">ts</span>.<span class="fn">quantile</span>(<span class="nu">0.70</span>)   <span class="cm"># first 70% of time → training</span>
+<span class="va">q_val</span>   = <span class="va">ts</span>.<span class="fn">quantile</span>(<span class="nu">0.85</span>)   <span class="cm"># next 15% → validation</span>
+<span class="cm">                                  # last 15% → test</span></pre>
+
+  <div class="callout callout-danger">
+    <div class="callout-title">Never Random-Split Time Series Data</div>
+    A random split on temporal data lets the model "see" future patterns during training. Split by time so training always precedes validation which always precedes test — just like in production.
+  </div>
+</section>
+
+<!-- SECTION 7: OFFLINE VS ONLINE -->
+<section id="serving">
+  <h2><span class="num">7</span> Offline vs Online: Two Access Patterns</h2>
+
+  <table>
+    <tr>
+      <th></th>
+      <th>Offline Store</th>
+      <th>Online Store</th>
+    </tr>
+    <tr>
+      <td><strong>Purpose</strong></td>
+      <td>Training dataset generation</td>
+      <td>Real-time prediction serving</td>
+    </tr>
+    <tr>
+      <td><strong>Latency</strong></td>
+      <td>Seconds to minutes</td>
+      <td>Milliseconds</td>
+    </tr>
+    <tr>
+      <td><strong>Data volume</strong></td>
+      <td>Full history</td>
+      <td>Latest value per entity only</td>
+    </tr>
+    <tr>
+      <td><strong>API</strong></td>
+      <td><code>get_historical_features()</code></td>
+      <td><code>get_online_features()</code></td>
+    </tr>
+    <tr>
+      <td><strong>Backend (demo)</strong></td>
+      <td>Local parquet files</td>
+      <td>SQLite</td>
+    </tr>
+    <tr>
+      <td><strong>Backend (prod)</strong></td>
+      <td>BigQuery, Redshift, Snowflake</td>
+      <td>Redis, DynamoDB, Bigtable</td>
+    </tr>
+  </table>
+
+  <h3>Materialization — Bridging Offline to Online</h3>
+  <p>Materialization reads from the offline store and writes the latest value per entity into the online store. Run it on a schedule to keep the online store fresh.</p>
+  <pre><span class="cm"># Push all new feature values up to now into the online store</span>
+<span class="va">store</span>.<span class="fn">materialize_incremental</span>(end_date=<span class="fn">datetime</span>.<span class="fn">now</span>(<span class="cl">timezone</span>.utc))
+
+<span class="cm"># Then serve in milliseconds</span>
+<span class="va">online</span> = <span class="va">store</span>.<span class="fn">get_online_features</span>(
+    features=<span class="va">svc</span>,
+    entity_rows=[{<span class="st">"customer_id"</span>: <span class="st">"7590-VHVEG"</span>}],
+).<span class="fn">to_dict</span>()</pre>
+
+  <div class="callout callout-success">
+    <div class="callout-title">Production Pattern</div>
+    Run <code>materialize_incremental()</code> as a scheduled job (hourly/daily). Your prediction API then calls <code>get_online_features()</code> synchronously — no computation, just a key-value lookup.
+  </div>
+</section>
+
+<!-- SECTION 8: MENTAL MODEL -->
+<section id="mental-model">
+  <h2><span class="num">8</span> Mental Model Summary</h2>
+
+  <h3>Think of Feast as Three Things at Once</h3>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">📚</div>
+      <div class="card-title">A Catalog</div>
+      <div class="card-desc">The registry is a catalog of "what features exist, what type they are, where they come from, and how long they're valid." Like a schema for your features.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔎</div>
+      <div class="card-title">A Time Machine</div>
+      <div class="card-desc">When building training data, Feast travels back to any point in time and reconstructs exactly what features were available then. No leakage, no hindsight.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <div class="card-title">A Cache Manager</div>
+      <div class="card-desc">Materialization copies offline features into a fast online cache. Your serving layer never re-computes — it just looks up precomputed values by entity ID.</div>
+    </div>
+  </div>
+
+  <h3>The 5 Things to Always Remember</h3>
+  <pre><span class="cm">1. Entity      →  the "who" (customer_id, product_id, driver_id)</span>
+<span class="cm">2. FeatureView →  the "what" (features for an entity + their source + TTL)</span>
+<span class="cm">3. feast apply →  registers definitions in registry (no data moved)</span>
+<span class="cm">4. get_historical_features() →  point-in-time safe training set</span>
+<span class="cm">5. materialize + get_online_features() →  production serving</span></pre>
+
+  <h3>The Golden Rule</h3>
+  <div class="insight">
+    Your model in production sees exactly the same feature values it trained on — because both are served by the same Feast definitions. That is training/serving parity. That is why Feast exists.
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-title">When to use Feast in a real project</div>
+    When you have: multiple models sharing features · a gap between training and serving environments · requirements for reproducible training sets · millisecond serving latency constraints · regulatory need to audit what data a model saw at training time.
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<div class="footer">
+  Built from <strong>feast_demo.ipynb</strong> · Telco Customer Churn · Feast 0.52.0 + scikit-learn 1.6.1
+</div>
+
+</body>
+</html>
