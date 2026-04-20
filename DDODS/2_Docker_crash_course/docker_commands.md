@@ -1,75 +1,358 @@
-# Docker Commands
+# Docker Crash Course — Concepts & Guide
 
-## 1. Clean start
+Demo: `Dockerfile`, `docker-compose.yml`, `server.js` — Node.js profile app + MongoDB + Mongo Express.
 
-```bash
-docker rm -f $(docker ps -aq)
-docker network rm profile-net
+---
+
+## Part 1 — Why Containers Exist
+
+### The environment problem
+
+Software runs inside an environment. That environment includes:
+the operating system, installed libraries, runtime versions, network config,
+environment variables, available ports, file paths.
+
+A piece of software that works perfectly in one environment can fail completely in another —
+same code, different result. This causes:
+
+- "Works on my machine" bugs that waste days to diagnose
+- Deployment failures when the server has different library versions
+- Onboarding problems when a new developer can't reproduce the dev environment
+- Subtle production bugs when staging and prod differ slightly
+
+This is not a niche problem. It is the single most common source of friction
+between development and production in software engineering.
+
+---
+
+### What containerization solves
+
+A container packages an application **together with everything it needs to run**:
+the runtime, libraries, config, filesystem structure. The package is self-contained.
+It runs identically on your laptop, a colleague's machine, and a cloud server.
+
+The host machine provides only one thing: the ability to run containers.
+It does not need the right Python version, the right libraries, or any specific config.
+Everything the app needs is inside the container.
+
+```
+Without containers:
+  Host must have: Node 18.x, MongoDB 7, correct npm packages, right env vars...
+  Different for every developer, every server, every CI environment.
+
+With containers:
+  Host must have: Docker
+  Everything else is inside the image.
 ```
 
 ---
 
-## 2. Create network
+### Containers vs Virtual Machines
 
-```bash
-docker network create profile-net
+Both create isolated environments. The difference is what they virtualize:
+
+```
+Virtual Machine                     Container
+────────────────────────────        ────────────────────────────
+Application                         Application
+Libraries                           Libraries
+Full Guest OS (~GB)                 (shares host OS kernel)
+Hypervisor (hardware emulation)     Container runtime (Docker)
+Host OS                             Host OS
+Hardware                            Hardware
+
+Startup:  minutes                   Startup:  seconds
+Size:     gigabytes                 Size:     megabytes
+Isolation: hardware-level           Isolation: process-level
+```
+
+Containers are lighter because they don't emulate hardware or carry a full OS.
+They share the host kernel but isolate the filesystem and processes.
+For most dev and ML use cases, containers are the right trade-off.
+
+---
+
+### Where Docker fits in the MLOps progression
+
+```
+1. Local scripts           runs on your machine, breaks on others
+2. Virtual environments    isolates Python packages — not the full environment
+3. Docker containers       full environment isolation, reproducible     ← you are here
+4. Docker Compose          multi-service orchestration                  ← and here
+5. Container registry      share images across teams (Docker Hub, ECR)
+6. Kubernetes              orchestrate containers at scale in production
 ```
 
 ---
 
-## 3. Run MongoDB
+## Part 2 — Images and Containers
 
-```bash
-docker run -d \
-  --name mongodb \
-  --net profile-net \
-  -p 27017:27017 \
-  -e MONGO_INITDB_ROOT_USERNAME=admin \
-  -e MONGO_INITDB_ROOT_PASSWORD=password \
-  mongo
+### The image
+
+An image is a **read-only snapshot** of a filesystem and its configuration.
+It is built from a `Dockerfile` — a recipe that describes what to install and configure.
+
+Images are layered. Each instruction in the Dockerfile adds a layer.
+Layers are cached: if a layer hasn't changed, Docker reuses the cached version
+without re-executing the instruction. This makes rebuilds fast.
+
+Think of an image as a class definition: it describes a blueprint.
+It does not run anything on its own.
+
+---
+
+### The container
+
+A container is a **running instance of an image**.
+Docker adds a thin writable layer on top of the image for the container's runtime state.
+Stop the container, and that writable layer is discarded.
+
+The image stays unchanged. You can start another container from the same image
+and it starts clean, without any state from the previous run.
+
+Think of a container as an object instantiated from a class:
+- One image → many containers
+- Containers are ephemeral; images are persistent
+- Modifying a container doesn't change the image
+
+---
+
+### The Dockerfile
+
+```dockerfile
+FROM node:alpine                  # base image: Node.js on minimal Alpine Linux
+WORKDIR /usr/src/app              # working directory inside the image
+COPY package*.json ./             # copy dependency manifest first
+RUN npm install --production      # install deps (cached unless package.json changes)
+COPY . .                          # copy source code (changes more often)
+EXPOSE 3000                       # document the port the app listens on
+CMD ["node", "server.js"]         # command to run when the container starts
 ```
 
+The copy-dependencies-before-source pattern is about **layer caching**.
+Docker executes Dockerfile instructions top to bottom and caches each result.
+If `package.json` is unchanged, Docker skips the `npm install` layer entirely on rebuild.
+If you copied everything at once, any code change would invalidate the npm install cache.
+
+`CMD` uses array form ("exec form") — runs `node` directly as the process.
+The alternative string form runs through `/bin/sh -c`, which adds a shell in between
+and can cause problems with signal handling (SIGTERM not reaching the app, slow shutdowns).
+
 ---
 
-## 4. Run mongo-express
+## Part 3 — Networking in Docker
 
-```bash
-docker run -d \
-  --name mongo-express \
-  --net profile-net \
-  -p 8081:8081 \
-  -e ME_CONFIG_MONGODB_URL="mongodb://admin:password@mongodb:27017/?authSource=admin" \
-  mongo-express
+### The isolation problem
+
+By default, each container is isolated from every other container, and from the host.
+A container running MongoDB on port 27017 is not reachable from another container —
+not even one on the same machine.
+
+This is intentional. Isolation is the point of containers.
+But for multi-service apps, services need to talk to each other.
+
+---
+
+### Docker networks
+
+A Docker network is a virtual private network that containers can join.
+Containers on the same network can reach each other by **container name**.
+Docker provides built-in DNS resolution: `mongodb` inside the network resolves to the
+IP address of the container named `mongodb`.
+
+```
+profile-net (virtual network)
+  ├── profile-app    reachable as "profile-app" on this network
+  ├── mongodb        reachable as "mongodb" on this network
+  └── mongo-express  reachable as "mongo-express" on this network
 ```
 
+The Node.js app connects to MongoDB with:
+```
+mongodb://admin:password@mongodb:27017/
+```
+`mongodb` is the container name — not an IP, not localhost.
+This works because Docker resolves it via the network's DNS.
+
+No hardcoded IPs. If Docker reassigns IPs (it does), the connection string still works.
+
 ---
 
-## 5. Run backend (host)
+### Port mapping
 
-```bash
-npm install
-node server.js
+A network inside Docker is private. To make a service reachable from your host machine
+(your browser, a curl command), you map container ports to host ports:
+
+```
+-p 3000:3000     host port 3000 → container port 3000
+-p 27017:27017   host port 27017 → container port 27017
 ```
 
----
+Container ports are for inter-container communication.
+Host ports are for external access (your browser, tools on your machine).
 
-## 6. Access
-
-* App: [http://localhost:3000](http://localhost:3000)
-* API: [http://localhost:3000/profile](http://localhost:3000/profile)
-* Mongo UI: [http://localhost:8081](http://localhost:8081)
-
-  * user: `admin`
-  * pass: `pass`
+They don't have to match — `-p 8080:3000` forwards host 8080 to container 3000.
 
 ---
 
-## 7. Data location
+## Part 4 — Docker Compose
 
-mongo-express →
-`profile_app` → `profiles`
+### The problem with running containers manually
 
+For a three-service app, manual `docker run` means:
+three separate commands, manual network creation, manual dependency ordering,
+easy to get flags wrong, hard to share with the team.
 
-## Note : 
-Please refer to the offical docs if you faced any issue with the above commands.
-maybe there is an update in the image or something else. 
+Docker Compose solves this with a single YAML file that declares the entire
+multi-service setup. One `docker compose up` starts everything.
+One `docker compose down` tears it all down cleanly.
+
+---
+
+### The three services in this demo
+
+```yaml
+services:
+  app:            Node.js profile API
+  mongodb:        The database
+  mongo-express:  Web UI to browse MongoDB
+```
+
+Each service is a separate container with its own image, ports, and config.
+Together they form one working application.
+
+---
+
+### Dependency ordering and readiness
+
+```yaml
+depends_on:
+  - mongodb
+```
+
+`depends_on` tells Compose: start `mongodb` before `app`.
+**Important:** this only waits for the container to *start*, not for MongoDB to be *ready*.
+MongoDB needs a few seconds to initialize after its container starts.
+
+The demo handles this gracefully: `server.js` has a fallback to in-memory storage
+if MongoDB isn't reachable at startup. In production, you'd use a readiness probe
+(Kubernetes) or a retry loop with exponential backoff.
+
+---
+
+### Restart policy
+
+```yaml
+restart: unless-stopped
+```
+
+| Policy | Behavior |
+|---|---|
+| `no` | Never restart automatically |
+| `always` | Restart even after explicit stop |
+| `on-failure` | Restart only on non-zero exit code |
+| `unless-stopped` | Restart on crash, respect explicit stops |
+
+`unless-stopped` is the right default for database containers in development:
+they recover from crashes automatically but stop when you intend to stop the project.
+
+---
+
+### Environment variables
+
+```yaml
+environment:
+  MONGO_URL: mongodb://admin:password@mongodb:27017/?authSource=admin
+```
+
+Config that changes between environments (dev, staging, production) should never
+be hardcoded in source code or images.
+
+The app reads it at runtime:
+```javascript
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017';
+```
+
+The `||` fallback is the local development default — when running without Docker,
+the variable is absent and the app uses localhost.
+In Docker, the variable is injected by Compose and overrides the default.
+
+In production, secrets (passwords, API keys) come from a secrets manager
+(HashiCorp Vault, Kubernetes Secrets) — never from Compose files committed to git.
+
+---
+
+## Part 5 — The Bigger Picture
+
+### What this demo represents
+
+```
+Browser
+  │ HTTP :3000
+Node.js API (profile-app)
+  │ TCP :27017 (via profile-net DNS)
+MongoDB (mongodb)
+
+Mongo Express (mongo-express)
+  │ connects to mongodb via profile-net
+  │ exposed on host :8081 for DB inspection
+```
+
+Three containers, one shared network, one `docker compose up` to run the whole thing.
+
+---
+
+### From dev to production
+
+| Concern | Development (this demo) | Production |
+|---|---|---|
+| Secrets | Hardcoded in compose file | Secrets manager (Vault, K8s Secrets) |
+| Data persistence | Ephemeral (lost on `down`) | Docker volumes mounted to host |
+| Scaling | Single container | Kubernetes with replicas |
+| Image storage | Local | Container registry (ECR, GCR, Docker Hub) |
+| MongoDB | Single container | Replica set or managed DB (Atlas) |
+
+The concepts are identical. The infrastructure around them scales up.
+
+---
+
+## Quick Reference
+
+### Build and run with Compose
+
+```bash
+docker build -t my-app:1.0 .    # build the app image first
+docker compose up               # start all services
+docker compose up -d            # start in background
+docker compose down             # stop and remove containers + networks
+docker compose logs -f          # follow logs from all services
+```
+
+### Useful Docker commands
+
+```bash
+docker ps                       # running containers
+docker ps -a                    # all containers (including stopped)
+docker logs -f <container>      # follow container logs
+docker exec -it <container> sh  # shell into a running container
+docker images                   # list local images
+docker rm -f $(docker ps -aq)  # remove all containers (clean slate)
+```
+
+### Access points
+
+| Service | URL |
+|---|---|
+| App | http://localhost:3000 |
+| Profile API | http://localhost:3000/profile |
+| Health check | http://localhost:3000/health |
+| Mongo Express | http://localhost:8081 |
+
+---
+
+## Official Documentation
+
+- Docker overview: https://docs.docker.com/get-started/overview/
+- Dockerfile reference: https://docs.docker.com/engine/reference/builder/
+- Docker Compose: https://docs.docker.com/compose/
+- Docker networking: https://docs.docker.com/network/

@@ -167,9 +167,4 @@ The mindset shift is from **model-centric** to **systems engineering**, where re
 
 ---
 
-> **📌 Note to the reader:**  
-> This article is based on a provided PDF. Some figures, code snippets, and detailed examples were referenced but not included in the original text. If you would like to fill in specific diagrams, code blocks, or case studies mentioned (e.g., model compression techniques, CD4ML diagram, feedback loop illustrations), please provide them, and I can integrate them into this markdown version.
-
----
-
-*Next in the series: Deep dive into the ML lifecycle, real-world case studies, tooling for versioning, monitoring, and LLMOps considerations.*
+*This course is actively growing — more modules, deeper dives, and real-world case studies are being added.*

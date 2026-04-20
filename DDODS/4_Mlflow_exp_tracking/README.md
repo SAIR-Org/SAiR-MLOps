@@ -1,123 +1,334 @@
-# MLflow Experiment Tracking Project
+# MLflow Experiment Tracking — Concepts & Guide
 
-This project demonstrates machine learning experiment tracking using MLflow with scikit-learn models on the Iris dataset. It compares multiple classification algorithms, tracks their performance, and manages model registry.
+Demo: `exp-tracking.ipynb` — Iris classification, three-model comparison and registry.
 
-## Project Overview
+---
 
-This project includes:
+## Part 1 — The Experiment Tracking Problem
 
-- **Experiment tracking** for multiple ML models (Logistic Regression, Random Forest, SVM)
-- **Model comparison** based on accuracy, F1-score, and log loss metrics
-- **Model registry** for managing the best performing model
-- **Interactive Jupyter notebook** for experimentation and analysis
+### The notebook chaos problem
 
-## Requirements
+ML development is experimental by nature. You try an algorithm. You tune parameters.
+You try a different algorithm. You preprocess differently. You repeat.
 
-- MLflow 3.2.0
-- scikit-learn 1.6.1
-- pandas 2.2.2
-- Jupyter notebook support
+Each attempt generates numbers — accuracy, loss, F1. After twenty experiments,
+the critical questions become:
 
-## Setup and Installation
+- Which configuration produced the best result?
+- What exactly were the parameters for that run?
+- Can I reproduce it?
+- Can I compare two runs side by side?
 
-### Option 1: Local Development with uv (Recommended)
+Without a tracking system, the answers live in your memory, in comments in the notebook,
+in a spreadsheet you may or may not have updated. This doesn't scale beyond a handful
+of experiments, and it makes reproducibility nearly impossible.
 
-1. **Install dependencies:**
+**Experiment tracking is structured logging for ML experiments.**
+Every run is a record: the parameters that went in, the metrics that came out,
+and the artifacts that were produced. All queryable, all comparable.
 
-   ```bash
-   uv sync
-   ```
+---
 
-2. **Activate the virtual environment:**
+### The model handoff problem
 
-   ```bash
-   # On Windows PowerShell
-   .venv\Scripts\activate
+You found the best model. Now someone needs to use it — another service, a colleague,
+a deployment system. They need to know:
 
-   # On Unix/MacOS
-   source .venv/bin/activate
-   ```
+- Which file is the model?
+- Which version? (You trained four times this week.)
+- What dependencies does it need to load correctly?
+- How is it expected to be called?
 
-3. **Run the experiment:**
+This is the **model handoff problem**. Without a registry, the answer is email threads
+and Slack messages. With a registry, there is a single catalog where models are
+versioned, documented, and promoted through stages.
 
-   Use VS Code to open and execute the notebook cells.
+---
 
-4. **Start MLflow UI (optional):**
+### The two problems MLflow solves
 
-   ```bash
-   mlflow ui
-   ```
+```
+Experiment Tracking    "Which of my experiments was best, and how do I reproduce it?"
+                       → Structured log: params + metrics + artifacts per run
 
-   This will start the MLflow tracking server at `http://localhost:5000`
+Model Registry         "Which model is in production, and how do I update it safely?"
+                       → Versioned catalog: register → staging → production → archived
+```
 
-## Usage
+This demo covers both.
 
-### Running Experiments
+---
 
-The main experiment is contained in `exp-tracking.ipynb`. The notebook will:
+### Where MLflow fits in the MLOps progression
 
-1. **Load and prepare data:** Uses the built-in Iris dataset from scikit-learn
-2. **Train multiple models:** Compares Logistic Regression, Random Forest, and SVM
-3. **Track experiments:** Logs parameters, metrics, and models using MLflow
-4. **Compare results:** Displays performance metrics for all models
+```
+1. Ad-hoc notebooks    experiments live in your head and notebook outputs
+2. Spreadsheet logs    manual, error-prone, not linked to artifacts
+3. MLflow tracking     every run logged automatically, comparable in UI    ← you are here
+4. MLflow registry     promoted models, lifecycle management               ← and here
+5. Automated training  pipelines trigger new runs on a schedule
+6. Full CD4ML          continuous training + automated deployment
+```
 
-### Key Features
+---
 
-- **Automated experiment tracking:** All model parameters, metrics, and artifacts are logged
-- **Model comparison:** Side-by-side comparison of different algorithms
-- **Model registry:** Best performing model can be registered for deployment
-- **Reproducible results:** Fixed random seeds ensure consistent results
+## Part 2 — Core MLflow Concepts
 
-### Metrics Tracked
+### The experiment
 
-- **Accuracy:** Overall classification accuracy
-- **F1-Score (macro):** Macro-averaged F1-score across all classes
-- **Log Loss:** Probabilistic loss function for multi-class classification
+An experiment is a named container for a group of related runs.
+It answers: "What problem am I trying to solve?" — not "How am I solving it?"
 
-## Model Registry
+```
+Experiment: "Iris_Classification_Comparison"
+  All runs that attempt to classify Iris flowers belong here.
+  Different algorithms, different parameters — same experiment.
+```
 
-After running experiments, you can register the best model:
+In production, one experiment maps to one model version objective.
+Experiments accumulate over the lifetime of a project.
 
-1. Uncomment and run the model registration cell in the notebook, by giving in the correct run ID.
-2. The best model will be registered as "IrisBestModel".
+---
 
-OR
+### The run
 
-1. Start the Mlflow UI.
-2. There navigate and find the model and hit register model and provide the name "IrisBestModel".
+A run is a single execution with a defined start and end.
+It is the atomic unit of tracking.
 
-Either of the way, finally, load and use the registered model for predictions.
+```
+Run: "RandomForest"
+  Parameters (inputs):     model_type, n_estimators, random_state
+  Metrics (outputs):       accuracy, f1_score, log_loss
+  Artifacts (files):       the serialized model, plots, data samples
+  Metadata (context):      start time, duration, git commit, run ID
+```
 
-## Viewing Results
+Every run gets a unique `run_id`. That ID is the permanent reference.
+Given a run ID, you can always find the exact model it produced.
 
-### MLflow UI
+---
 
-Start the MLflow UI to view experiment results:
+### Parameters vs metrics vs artifacts
+
+| Type | What it is | Examples |
+|---|---|---|
+| Parameter | Inputs you chose | `n_estimators=100`, `learning_rate=0.001` |
+| Metric | Outputs you measured | `accuracy=0.97`, `log_loss=0.017` |
+| Artifact | Files the run produced | trained model, confusion matrix, feature importances |
+
+The distinction matters for the UI: parameters are used for filtering and grouping runs;
+metrics are plotted over steps; artifacts are downloadable and deployable.
+
+---
+
+### Why log_loss, not just accuracy?
+
+On the Iris dataset, all three models in the demo achieve 100% accuracy.
+Accuracy alone cannot distinguish them.
+
+**Log loss** measures not just whether predictions are correct, but how confident
+they are. A model that correctly predicts class A with 51% probability and one that
+does it with 99% probability both score the same on accuracy — log loss tells them apart.
+
+```
+lower log_loss = more confident correct predictions
+
+RandomForest: 0.017  ← most confident
+SVC:          0.077
+LogReg:       0.111  ← least confident
+```
+
+In production, confidence matters: a model that is barely more likely than chance
+to predict the right class is dangerous in high-stakes decisions, even if its
+accuracy looks fine. Log loss is the better selection criterion when accuracies are tied.
+
+---
+
+### The model registry
+
+The registry is a catalog, not a storage system. It organizes pointers to model artifacts
+that were already logged during runs.
+
+A registered model has versions and stages:
+
+```
+Model: "IrisBestModel"
+  Version 1    (trained 2025-01-15)  stage: None → Staging → Production
+  Version 2    (trained 2025-02-01)  stage: None → Staging (testing in progress)
+  Version 3    (trained 2025-03-10)  stage: None (just registered)
+```
+
+Promoting a model from Staging to Production is a deliberate human (or automated) decision.
+The serving system loads by stage (`Production`), not by version number.
+When you promote Version 2, the serving system picks it up without a code change.
+
+This is the **promotion workflow**: the interface between experimentation and deployment.
+
+---
+
+## Part 3 — The Demo Walkthrough
+
+### What the demo does
+
+Three classifiers are trained on the same Iris dataset in a loop.
+Each run is logged to MLflow with identical structure — same params tracked,
+same metrics tracked, same model format. The best run is then registered.
+
+The demo shows:
+1. How the experiment/run structure maps to real experiment management
+2. How metrics are compared across runs
+3. How the registry decouples the model from the code that serves it
+
+---
+
+### The context manager pattern
+
+```python
+with mlflow.start_run(run_name=name) as run:
+    # train, evaluate, log
+```
+
+The `with` block defines the run's lifetime. MLflow records start time on entry
+and end time + status on exit — even if an exception occurs. The run is always
+cleanly closed. `run.info.run_id` is available inside the block.
+
+---
+
+### The log_model call
+
+```python
+mlflow.sklearn.log_model(model, name="model", input_example=X_test[:5])
+```
+
+This does more than `joblib.dump`. It saves:
+- The serialized model (via joblib internally)
+- A `conda.yaml` — the exact Python environment needed to reload it
+- A `MLmodel` file — the model's signature (input/output schema)
+- An `input_example` — a sample of real data for documentation and schema inference
+
+The result is a **self-describing model package**.
+MLflow can serve it as a REST endpoint with zero additional code:
+`mlflow models serve -m runs:/{run_id}/model`.
+
+---
+
+### The registry connection
+
+```python
+mlflow.register_model(
+    model_uri=f"runs:/{best_run_id}/model",
+    name="IrisBestModel"
+)
+```
+
+`model_uri` is a pointer, not a copy. The artifact stays where it was logged.
+The registry just adds a named, versioned reference to it.
+
+Loading from the registry decouples consuming code from specific run IDs:
+
+```python
+# Fragile: tied to a specific run
+model = mlflow.sklearn.load_model("runs:/94d7b467.../model")
+
+# Robust: tied to a stage — survives model updates
+model = mlflow.sklearn.load_model("models:/IrisBestModel/Production")
+```
+
+The serving system never changes its code. You update the model by registering
+a new version and promoting it.
+
+---
+
+## Part 4 — The Bigger Picture
+
+### Where MLflow sits in the system
+
+```
+Experiments (notebooks, pipelines)
+         │
+         │  mlflow.log_param / log_metric / log_model
+         ▼
+MLflow Tracking Server
+  ├── Run metadata (params, metrics, tags)
+  └── Artifact store (model files, plots)
+         │
+         │  mlflow.register_model
+         ▼
+MLflow Model Registry
+  └── Named models with versions and stages
+         │
+         │  mlflow.sklearn.load_model("models:/Name/Production")
+         ▼
+Serving system (API, batch job, notebook)
+```
+
+MLflow is the connection between experimentation and deployment.
+Everything upstream produces artifacts. Everything downstream consumes them.
+The registry is the handoff point.
+
+---
+
+### MLflow vs W&B
+
+| | MLflow | W&B |
+|---|---|---|
+| Hosting | Self-hosted (local or server) | Cloud service |
+| Model registry | First-class, built-in | Via Artifacts |
+| Data lineage | Not built-in | Native (artifact graphs) |
+| Team sharing | Needs shared tracking server | Immediate (cloud) |
+| Best for | Enterprise, self-hosted | Team dashboards, quick start |
+
+Both track experiments. The choice depends on your infrastructure constraints.
+W&B is covered in the next lesson.
+
+---
+
+## Quick Reference
+
+### Start the UI
 
 ```bash
 mlflow ui
+# → http://localhost:5000
 ```
 
-Navigate to `http://localhost:5000` to:
+### Core logging pattern
 
-- Compare experiment runs
-- View metrics and parameters
-- Download model artifacts
-- Manage model registry
+```python
+mlflow.set_experiment("my_experiment")
 
-### Notebook Output
+with mlflow.start_run(run_name="my_run") as run:
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_metric("accuracy", 0.97)
+    mlflow.sklearn.log_model(model, "model")
+    print(run.info.run_id)
+```
 
-The notebook displays:
+### Register and load
 
-- Run IDs for each experiment
-- Performance metrics for each model
-- Best model identification based on log loss
+```python
+# Register the best run's model
+mlflow.register_model(f"runs:/{run_id}/model", "MyModel")
 
-## Customization
+# Load by stage (used in serving)
+model = mlflow.sklearn.load_model("models:/MyModel/Production")
 
-To experiment with different models or parameters:
+# Load latest (used in notebooks)
+model = mlflow.sklearn.load_model("models:/MyModel/latest")
+```
 
-1. Add new models to the `models` dictionary in the notebook
-2. Modify hyperparameters for existing models
-3. Add new metrics by importing from `sklearn.metrics`
-4. Change the dataset by replacing `load_iris()` with your data
+### Serve a model as REST API
+
+```bash
+mlflow models serve -m "models:/MyModel/Production" -p 5001
+# POST http://localhost:5001/invocations {"inputs": [[5.1, 3.5, 1.4, 0.2]]}
+```
+
+---
+
+## Official Documentation
+
+- MLflow tracking: https://mlflow.org/docs/latest/tracking.html
+- Model registry: https://mlflow.org/docs/latest/model-registry.html
+- MLflow concepts: https://mlflow.org/docs/latest/concepts.html
+- Sklearn flavor: https://mlflow.org/docs/latest/python_api/mlflow.sklearn.html
