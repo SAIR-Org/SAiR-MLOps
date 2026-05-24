@@ -99,23 +99,64 @@ Keep it open across all lectures. Every module adds one layer.
 
   [Module 8]  Spark        Scales the data pipeline beyond one machine.
                            Partition → distribute → aggregate.
+
+  ── DEPLOYMENT LAYER (Module 10 — coming) ───────────────────────────────────
+
+  Cloud Providers          AWS / GCP / Azure managed ML infrastructure.
+  (EKS, GKE, AKS)         Your container cluster, auto-scaled.
+
+  Kubernetes               Orchestrates containers at scale.
+                           Scheduler → pods → services → ingress.
+
+  Deployment Strategies
+  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+  │   Rolling   │  │   Canary    │  │ Blue-Green  │  │   Shadow    │
+  │  Gradual    │  │  Small %    │  │  Two live   │  │  No traffic │
+  │  replace    │  │  of traffic │  │  envs, flip │  │  on new ver │
+  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘
+
+  ── OBSERVABILITY LAYER (Module 11 — coming) ────────────────────────────────
+
+  Infrastructure metrics   Latency, throughput, CPU/memory, error rate.
+  (Prometheus + Grafana)   Alerts when the system is unhealthy.
+
+  Data drift detection     Input distribution shifts from training distribution.
+  (Evidently / Whylogs)    Triggers retraining before accuracy visibly drops.
+
+  Model performance        Prediction quality over time (where labels exist).
+                           Catches concept drift.
+
+  ── CI/CD LAYER (Module 12 — coming) ────────────────────────────────────────
+
+  CI pipeline              On every push: run tests, validate data schema,
+  (GitHub Actions)         train a shadow model, compare metrics to baseline.
+
+  CD pipeline              On merge to main: build container image,
+  (ArgoCD / GitOps)        push to registry, deploy to staging, promote.
+
+  Model validation gate    Automated check: new model must beat current
+                           production model on a held-out eval set.
+                           If not, deployment is blocked.
 ```
 
 ---
 
 ## What Each Module Adds to the System
 
-| Module | What Gets Added | Where in the Diagram |
-|--------|----------------|----------------------|
-| 1 | Serving API (FastAPI) + first container | Serving Layer |
-| 2 | Docker depth: images, networking, Compose | Infrastructure |
-| 3 | DVC versioning for data + models | Versioning Layer |
-| 4 | MLflow: structured run logs + model registry | Training Layer |
-| 5 | W&B: cloud tracking + artifact lineage | Training Layer |
-| 6 | Data pipeline: ingest + validate + features | Data Layer |
-| 7 | Feature store: offline + online, training-serving consistency | Data Layer |
-| 8 | Orchestration (Prefect) + distribution (Spark) | Infrastructure |
-| 9 | Compression: pruning + quantization + distillation + ONNX | Optimization Layer |
+| Module | What Gets Added | Where in the Diagram | Status |
+|--------|----------------|----------------------|--------|
+| 1 | Serving API (FastAPI) + first container | Serving Layer | ✓ |
+| 2 | Docker depth: images, networking, Compose | Infrastructure | ✓ |
+| 3 | DVC versioning for data + models | Versioning Layer | ✓ |
+| 4 | MLflow: structured run logs + model registry | Training Layer | ✓ |
+| 5 | W&B: cloud tracking + artifact lineage | Training Layer | ✓ |
+| 6 | Data pipeline: ingest + validate + features | Data Layer | ✓ |
+| 7 | Feature store: offline + online, training-serving consistency | Data Layer | ✓ |
+| 8 | Orchestration (Prefect) + distribution (Spark) | Infrastructure | ✓ |
+| 9 | Compression: pruning + quantization + distillation + ONNX | Optimization Layer | ✓ |
+| 10 | Cloud + K8s + deployment strategies | Deployment Layer | Coming |
+| 11 | Data drift + model drift + infrastructure observability | Observability Layer | Coming |
+| 12 | CI/CD pipeline + model validation gate + GitOps | CI/CD Layer | Coming |
 
 ---
 
@@ -162,6 +203,33 @@ are all scalability failures at different layers of the system.
 | Schedule and monitor pipelines reliably | Prefect — Module 8 |
 | Compress models for deployment targets | Compression — Module 9 |
 | Containerize for hardware-agnostic deployment | Docker — Module 2 |
+| Scale the serving layer across many nodes | K8s — Module 10 |
+
+### Problem 4 — Observability
+*"The model was working. Now it isn't. We have no idea when it broke or why."*
+
+A deployed model is a black box unless you instrument it. Data drifts.
+User behavior changes. A feature pipeline silently starts producing nulls.
+Without observability, you find out when a customer complains — not before.
+
+| Solution | Module |
+|---------|--------|
+| Detect input distribution shift before accuracy drops | Evidently / Whylogs — Module 11 |
+| Track model performance over time with live labels | Model monitoring — Module 11 |
+| Infrastructure health: latency, errors, resource use | Prometheus + Grafana — Module 11 |
+
+### Problem 5 — Automation
+*"Every deployment is manual. One human error ships a broken model."*
+
+A system that requires manual steps at every stage is fragile at scale.
+CI/CD removes human error from the critical path by making the pipeline
+the gatekeeper, not the engineer.
+
+| Solution | Module |
+|---------|--------|
+| Automatically test code and validate data on every commit | CI pipeline — Module 12 |
+| Block deployments where the new model underperforms the old | Model validation gate — Module 12 |
+| Deploy automatically when all gates pass | CD pipeline / GitOps — Module 12 |
 
 ---
 
@@ -191,30 +259,44 @@ The system improves continuously because each flow feeds the next.
 ## How This Course Covers the Stack
 
 ```
-                        ┌──────────────┐
-                        │   Module 9   │ Compression → ONNX
-                        └──────┬───────┘
+                        ┌────────────────┐
+                        │   Module 12    │ CI/CD — automate the full loop
+                        └──────┬─────────┘
                                │
-                        ┌──────┴───────┐
-                        │  Modules 6-8 │ Data: pipelines, feature store, scale
-                        └──────┬───────┘
+                        ┌──────┴─────────┐
+                        │   Module 11    │ Monitoring + Observability
+                        └──────┬─────────┘
                                │
-                        ┌──────┴───────┐
-                        │  Modules 4-5 │ Experiment tracking, model registry
-                        └──────┬───────┘
+                        ┌──────┴─────────┐
+                        │   Module 10    │ Cloud + K8s + deployment strategies
+                        └──────┬─────────┘
                                │
-                        ┌──────┴───────┐
-                        │   Module 3   │ Versioning: data + models
-                        └──────┬───────┘
+                        ┌──────┴─────────┐
+                        │   Module 9     │ Compression → ONNX
+                        └──────┬─────────┘
                                │
-                        ┌──────┴───────┐
-                        │  Modules 1-2 │ Serving + containers (foundation)
-                        └─────────────┘
+                        ┌──────┴─────────┐
+                        │  Modules 6-8   │ Data: pipelines, feature store, scale
+                        └──────┬─────────┘
+                               │
+                        ┌──────┴─────────┐
+                        │  Modules 4-5   │ Experiment tracking, model registry
+                        └──────┬─────────┘
+                               │
+                        ┌──────┴─────────┐
+                        │   Module 3     │ Versioning: data + models
+                        └──────┬─────────┘
+                               │
+                        ┌──────┴─────────┐
+                        │  Modules 1-2   │ Serving + containers (foundation)
+                        └────────────────┘
 ```
 
 The bottom (serving + containers) is introduced first because it is tangible:
-you can call an API and see it work. Then each layer above it answers:
-"but wait — how did that model get there?" and "what happens when the data changes?"
+you can call an API and see it work. Each layer above answers the next
+unanswered question: "how did that model get there?", "what happens when
+the data changes?", "how do we know it's still working?", "how do we stop
+a human mistake from shipping a broken model?"
 
 ---
 
@@ -244,3 +326,16 @@ you can call an API and see it work. Then each layer above it answers:
 | **Quantization** | Reducing weight precision (FP32 → INT8) |
 | **Distillation** | Training a small model to mimic a large one |
 | **ONNX** | Hardware-agnostic model format for deployment |
+| **Kubernetes (K8s)** | System that schedules and manages containers across a cluster of machines |
+| **Rolling deployment** | Replace old pods one at a time — zero downtime, but mixed versions coexist briefly |
+| **Canary deployment** | Route a small % of traffic to the new version; watch metrics before full rollout |
+| **Blue-green deployment** | Run two identical environments; flip all traffic at once; easy rollback |
+| **Shadow deployment** | New model receives real traffic but its predictions are not returned to users |
+| **Data drift** | The input distribution at serving time diverges from the training distribution |
+| **Concept drift** | The relationship between inputs and the target label changes over time |
+| **Model monitoring** | Tracking prediction quality (accuracy, distribution) in production over time |
+| **Infrastructure observability** | Tracking latency, throughput, error rate, CPU/memory of deployed services |
+| **CI (Continuous Integration)** | Automatically build, test, and validate every code change |
+| **CD (Continuous Delivery/Deployment)** | Automatically deliver a validated build to production |
+| **Model validation gate** | Automated check that blocks a new model from deploying if it underperforms the current one |
+| **GitOps** | Git is the single source of truth for both infrastructure and application state |
