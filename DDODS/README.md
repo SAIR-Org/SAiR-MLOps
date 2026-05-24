@@ -31,12 +31,12 @@ This is the full system this course assembles, one module at a time.
   Raw Sources
   (CSV, JSON, DB)
        │
-       │  ── Module 6 ──────────────────────────────────────────────
+       │  ── Lesson 3.1 ─────────────────────────────────────────────
        ▼
   Data Pipeline
   Ingestion → Validation → Feature Engineering → Churn Labeling
        │
-       │  ── Module 7 ──────────────────────────────────────────────
+       │  ── Lesson 3.2 ─────────────────────────────────────────────
        ▼
   Feature Store (Feast)
   ┌──────────────────────┐       ┌───────────────────────────────┐
@@ -49,42 +49,42 @@ This is the full system this course assembles, one module at a time.
        ▼                                      ▼
   Training Dataset                       Live Feature Lookup
        │                                      │
-       │  ── Modules 4–5 ───────             │  ── Module 1 ────────
+       │  ── Lessons 2.2–2.3 ───────         │  ── Lesson 1.1 ──────
        ▼                                      ▼
   Training Run                           Serving API
   (MLflow / W&B)                         (FastAPI + Docker)
   log params, metrics,                        │
   artifacts, lineage                    POST /predict → prediction
        │
-       │  ── Module 3 ───────────────────────────────────────────────
+       │  ── Lesson 2.1 ─────────────────────────────────────────────
        ▼
   Versioned Model Artifact
   (DVC + git)
        │
-       │  ── Module 9 ───────────────────────────────────────────────
+       │  ── Lesson 4.1 ─────────────────────────────────────────────
        ▼
   Compressed Model
   (Pruned → Quantized → ONNX export)
   Ready for edge / low-latency deployment
 
-  ── Module 2 ─────────────────────────────────────────────────────────
+  ── Lesson 1.2 ───────────────────────────────────────────────────────
   Every component above runs inside a Docker container.
   Same environment on laptop, server, cloud.
 
-  ── Module 8 ─────────────────────────────────────────────────────────
+  ── Lesson 3.3 ───────────────────────────────────────────────────────
   Orchestration (Prefect) schedules and monitors the entire pipeline.
   Distribution (Spark) handles data that doesn't fit on one machine.
 
-  ── Module 10 (coming) ───────────────────────────────────────────────
+  ── Lesson 5.1 (coming) ──────────────────────────────────────────────
   Deployment at scale: cloud providers, Kubernetes, deployment strategies
   (rolling, canary, blue-green, shadow). The serving layer moves from
   a single container to a managed, auto-scaling production system.
 
-  ── Module 11 (coming) ───────────────────────────────────────────────
+  ── Lesson 5.2 (coming) ──────────────────────────────────────────────
   Monitoring + Observability: model drift, data drift, infrastructure
   metrics, alerting. The feedback loop that tells you when to retrain.
 
-  ── Module 12 (coming) ───────────────────────────────────────────────
+  ── Lesson 5.3 (coming) ──────────────────────────────────────────────
   CI/CD for ML: automated testing, model validation gates, triggered
   retraining, GitOps deployment. The system maintains itself.
 ```
@@ -98,63 +98,75 @@ Open `SYSTEM_MAP.md` for the detailed, always-current version of this diagram.
 Most ML courses teach tools in isolation: "here is MLflow, here is Docker."
 This course takes a different path: **start at the end, then fill in the gaps.**
 
-Module 1 starts with a deployed model — an API you can call right now.
-Each subsequent module reveals a gap in that simple picture and fills it.
+The course is structured as five modules. Each module is a coherent theme.
+Each lesson within a module solves one specific production failure mode.
 
 ```
-Module 1   You have a model. How do you serve it?
-           ↳ FastAPI wraps it. Docker makes it portable.
+MODULE 1 — The ML System
+─────────────────────────────────────────────────────────────────
+  Lesson 1.1   You have a model. How does anything call it?
+               ↳ FastAPI wraps it. Docker makes it run anywhere.
 
-Module 2   Docker is foundational. How does it actually work?
-           ↳ Containers, images, networking, Compose.
+  Lesson 1.2   Docker is foundational to every other component.
+               How does it actually work?
+               ↳ Containers, images, layer caching, Compose,
+                 inter-container networking.
 
-Module 3   Your model is a file. How do you know which version is in production?
-           ↳ DVC versions data + models alongside git history.
+MODULE 2 — Reproducibility
+─────────────────────────────────────────────────────────────────
+  Lesson 2.1   Your model is a file. Which version is in production?
+               Which data trained it?
+               ↳ DVC: versions data + models alongside git history.
 
-Module 4   You trained ten models. Which one is best, and can you reproduce it?
-           ↳ MLflow: structured logs per run, registry to promote the winner.
+  Lesson 2.2   You ran 20 experiments. Which was best?
+               Can you reproduce it next week?
+               ↳ MLflow: structured logs, metric comparison, registry.
 
-Module 5   Your team needs to see each other's experiments in real time.
-           ↳ W&B: cloud-native tracking, artifact lineage, live dashboards.
+  Lesson 2.3   Your team can't see each other's experiments.
+               You don't know which data version trained a model.
+               ↳ W&B: cloud-native tracking, artifact lineage.
 
-Module 6   Your model is only as good as its training data.
-           What is in that data, and how is it built?
-           ↳ ETL/ELT, validation, the temporal cutoff, feature engineering.
+MODULE 3 — Data Engineering for ML
+─────────────────────────────────────────────────────────────────
+  Lesson 3.1   Your model is only as good as its training data.
+               What is in that data, and how is it built safely?
+               ↳ ETL/ELT, validation, temporal cutoff, feature engineering.
 
-Module 7   Training and serving compute features differently.
-           They diverge silently, and the model degrades.
-           ↳ Feast: one feature definition, used by both training and serving.
+  Lesson 3.2   Training and serving compute features differently.
+               They diverge silently. The model degrades.
+               ↳ Feast: one feature definition for both training and serving.
 
-Module 8   The pipeline works in a notebook. How does it run every day, at scale?
-           ↳ Prefect orchestrates. Spark distributes.
+  Lesson 3.3   The pipeline works in a notebook.
+               How does it run every day, at scale, without your attention?
+               ↳ Prefect orchestrates. Spark distributes.
 
-Module 9   The model is too large or too slow to deploy where it needs to run.
-           ↳ Prune → Quantize → Distill → Export to ONNX.
+MODULE 4 — Model Optimization & Serving
+─────────────────────────────────────────────────────────────────
+  Lesson 4.1   The model is too large or too slow for the deployment target.
+               ↳ Prune → Quantize → Distill → Export to ONNX.
 
-── The system works. Now make it production-grade. ──────────────────────────
+  Lesson 4.2   REST is not fast enough for high-throughput inference.    [coming]
+               ↳ gRPC: binary protocol, streaming, lower latency.
 
-Module 10  A single Docker container is not a production deployment.
-           How do you run this reliably in the cloud, at scale, with zero downtime?
-           ↳ Cloud providers, Kubernetes, deployment strategies
-             (rolling update, canary, blue-green, shadow mode).
-             Coming soon.
+  Lesson 4.3   The model format is coupled to the training framework.     [coming]
+               ↳ Serialization: TorchScript, Protobuf, format tradeoffs.
 
-Module 11  The model is deployed. How do you know it is still working?
-           Data drifts. Concepts shift. Model performance degrades silently.
-           ↳ Data drift detection, model performance monitoring,
-             infrastructure observability (metrics, logs, traces).
-             Prometheus, Grafana, Evidently, Whylogs.
-             Coming soon.
+MODULE 5 — Production Engineering
+─────────────────────────────────────────────────────────────────
+  Lesson 5.1   A single container is not a production deployment.         [coming]
+               ↳ Cloud providers, Kubernetes, rolling/canary/blue-green.
 
-Module 12  Every step above is currently manual. One mistake, one skipped step,
-           one forgotten validation — the system ships a bad model.
-           ↳ CI/CD for ML: automated testing, model validation gates,
-             triggered retraining pipelines, GitOps deployment.
-             GitHub Actions, ArgoCD, automated promotion workflows.
-             Coming soon.
+  Lesson 5.2   The model is deployed. How do you know it still works?     [coming]
+               ↳ Data drift, model monitoring, Prometheus, Grafana,
+                 Evidently.
+
+  Lesson 5.3   Every step above is manual. One skipped step ships a       [coming]
+               bad model.
+               ↳ CI/CD for ML: GitHub Actions, model validation gates,
+                 GitOps deployment.
 ```
 
-Each module solves a specific production failure mode.
+Each lesson solves a specific failure mode in the production ML system.
 By the end of the course, you have a complete mental model of the system.
 
 ---
@@ -174,22 +186,51 @@ Return to it when a concept feels isolated — the system view reconnects it.
 
 ---
 
-## Module Map
+## Course Map
 
-| Module | Topic | Problem It Solves | Guide | Status |
+### Module 1 — The ML System
+*Start at the end. Understand what you're building toward before you build it.*
+
+| Lesson | Topic | Problem It Solves | Guide | Status |
 |--------|-------|-------------------|-------|--------|
-| 1 | [FastAPI + Docker](1_FastAPI_Docker_demo/) | Serving a trained model as a production API | [article.md](1_FastAPI_Docker_demo/article.md) · [guide](1_FastAPI_Docker_demo/FASTAPI_DOCKER_GUIDE.md) | ✓ |
-| 2 | [Docker in Depth](2_Docker_crash_course/) | Making any environment reproducible and portable | [docker_commands.md](2_Docker_crash_course/docker_commands.md) | ✓ |
-| 3 | [Data Versioning — DVC](3_Versioning/) | Tracing which data and model version is in production | [DVC_GUIDE.md](3_Versioning/DVC_GUIDE.md) | ✓ |
-| 4 | [Experiment Tracking — MLflow](4_Mlflow_exp_tracking/) | Knowing which experiment was best and reproducing it | [README.md](4_Mlflow_exp_tracking/README.md) | ✓ |
-| 5 | [Experiment Tracking — W&B](5_Weights_and_Biases/) | Team-visible tracking with artifact lineage | [WANDB_GUIDE.md](5_Weights_and_Biases/WANDB_GUIDE.md) | ✓ |
-| 6 | [Data Pipeline Part 1](6_Data_Pipeline_Part1/) | Building clean, leakage-free training data reliably | [DATA_PIPELINE_GUIDE.md](6_Data_Pipeline_Part1/DATA_PIPELINE_GUIDE.md) | ✓ |
-| 7 | [Feature Store — Feast](7_Data_Pipeline_Part2_FS/) | Eliminating training-serving skew | [FEAST_GUIDE.md](7_Data_Pipeline_Part2_FS/FEAST_GUIDE.md) | ✓ |
-| 8 | [Orchestration + Scale](8_Data_Pipeline_Part3_Spark_Prefect/) | Running pipelines reliably at scale | [DATA_PIPELINE_PART3_GUIDE.md](8_Data_Pipeline_Part3_Spark_Prefect/DATA_PIPELINE_PART3_GUIDE.md) | ✓ |
-| 9 | [Compression + Optimization](9_Compression_and_Optimization/) | Making the model deployable where it needs to run | [COMPRESSION_OVERVIEW.md](9_Compression_and_Optimization/COMPRESSION_OVERVIEW.md) | ✓ |
-| 10 | Deployment at Scale | Running in the cloud without downtime: K8s, strategies | — | Coming |
-| 11 | Monitoring + Observability | Knowing the model is still working after deployment | — | Coming |
-| 12 | CI/CD for ML | Automating the full loop: test → validate → deploy | — | Coming |
+| 1.1 | [Serving with FastAPI](Module_1_ML_Systems_Intro/Lesson_1_Serving_with_FastAPI/) | A trained model delivers no value until something can call it | [article.md](Module_1_ML_Systems_Intro/Lesson_1_Serving_with_FastAPI/article.md) · [guide](Module_1_ML_Systems_Intro/Lesson_1_Serving_with_FastAPI/FASTAPI_DOCKER_GUIDE.md) | ✓ |
+| 1.2 | [Docker in Depth](Module_1_ML_Systems_Intro/Lesson_2_Docker_in_Depth/) | Every component runs in a container — this is how containers actually work | [guide](Module_1_ML_Systems_Intro/Lesson_2_Docker_in_Depth/docker_commands.md) | ✓ |
+
+### Module 2 — Reproducibility
+*You can't improve what you can't reproduce.*
+
+| Lesson | Topic | Problem It Solves | Guide | Status |
+|--------|-------|-------------------|-------|--------|
+| 2.1 | [Data & Model Versioning — DVC](Module_2_Reproducibility/Lesson_1_Data_and_Model_Versioning/) | Which data version trained the model in production? | [DVC_GUIDE.md](Module_2_Reproducibility/Lesson_1_Data_and_Model_Versioning/DVC_GUIDE.md) | ✓ |
+| 2.2 | [Experiment Tracking — MLflow](Module_2_Reproducibility/Lesson_2_Experiment_Tracking_MLflow/) | 20 experiments, no record of which was best or how to reproduce it | [guide](Module_2_Reproducibility/Lesson_2_Experiment_Tracking_MLflow/README.md) | ✓ |
+| 2.3 | [Experiment Tracking — W&B](Module_2_Reproducibility/Lesson_3_Experiment_Tracking_WandB/) | Team visibility and artifact lineage across experiments | [WANDB_GUIDE.md](Module_2_Reproducibility/Lesson_3_Experiment_Tracking_WandB/WANDB_GUIDE.md) | ✓ |
+
+### Module 3 — Data Engineering for ML
+*The model is only as good as the data that reaches it.*
+
+| Lesson | Topic | Problem It Solves | Guide | Status |
+|--------|-------|-------------------|-------|--------|
+| 3.1 | [Data Pipelines](Module_3_Data_Engineering/Lesson_1_Data_Pipelines/) | Leakage, validation failures, and temporal errors in training data | [DATA_PIPELINE_GUIDE.md](Module_3_Data_Engineering/Lesson_1_Data_Pipelines/DATA_PIPELINE_GUIDE.md) | ✓ |
+| 3.2 | [Feature Store — Feast](Module_3_Data_Engineering/Lesson_2_Feature_Store/) | Training and serving compute features differently — silently | [FEAST_GUIDE.md](Module_3_Data_Engineering/Lesson_2_Feature_Store/FEAST_GUIDE.md) | ✓ |
+| 3.3 | [Orchestration + Scale](Module_3_Data_Engineering/Lesson_3_Orchestration_and_Scale/) | The pipeline works in a notebook — it won't run reliably at scale | [DATA_PIPELINE_PART3_GUIDE.md](Module_3_Data_Engineering/Lesson_3_Orchestration_and_Scale/DATA_PIPELINE_PART3_GUIDE.md) | ✓ |
+
+### Module 4 — Model Optimization & Serving
+*The model that trains is rarely the model that deploys.*
+
+| Lesson | Topic | Problem It Solves | Guide | Status |
+|--------|-------|-------------------|-------|--------|
+| 4.1 | [Compression](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/) | The model is too large or too slow for the deployment target | [COMPRESSION_OVERVIEW.md](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/COMPRESSION_OVERVIEW.md) | ✓ |
+| 4.2 | gRPC Serving | REST is not fast enough for high-throughput inference | — | Coming |
+| 4.3 | Serialization | Model format is coupled to the training framework | — | Coming |
+
+### Module 5 — Production Engineering
+*A deployed model is a system. Systems require infrastructure.*
+
+| Lesson | Topic | Problem It Solves | Guide | Status |
+|--------|-------|-------------------|-------|--------|
+| 5.1 | Deployment at Scale | A single container is not a production deployment | — | Coming |
+| 5.2 | Monitoring + Observability | The model is deployed — you have no idea if it's still working | — | Coming |
+| 5.3 | CI/CD for ML | Every step above is currently manual | — | Coming |
 
 ---
 

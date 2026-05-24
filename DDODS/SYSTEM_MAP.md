@@ -1,7 +1,7 @@
 # System Map — The Production ML System
 
 This document shows the complete system this course builds.
-Keep it open across all lectures. Every module adds one layer.
+Keep it open across all lectures. Every lesson adds one layer.
 
 ---
 
@@ -20,12 +20,12 @@ Keep it open across all lectures. Every module adds one layer.
   │  │  CSV files  │  │  JSON logs │  │  SQL / databases   │    │
   │  └─────┬──────┘  └─────┬──────┘  └─────────┬──────────┘    │
   │        └───────────────┼─────────────────────┘              │
-  │                        │  [Module 6]                         │
+  │                        │  [Lesson 3.1]                       │
   │                        ▼                                     │
   │              Data Pipeline                                   │
   │              Ingest → Validate → Engineer → Label            │
   │                        │                                     │
-  │                        ▼  [Module 7]                         │
+  │                        ▼  [Lesson 3.2]                       │
   │              ┌──────────────────────┐                        │
   │              │     Feature Store    │                        │
   │              │  ┌────────────────┐  │                        │
@@ -48,7 +48,7 @@ Keep it open across all lectures. Every module adds one layer.
   │     TRAINING LAYER       │      │         SERVING LAYER            │
   │                          │      │                                  │
   │  Training Run            │      │  Prediction API                  │
-  │  [Modules 4–5]           │      │  [Module 1]                      │
+  │  [Lessons 2.2–2.3]       │      │  [Lesson 1.1]                    │
   │                          │      │                                  │
   │  ┌────────────────────┐  │      │  ┌──────────────────────────┐   │
   │  │ Experiment Tracker │  │      │  │ FastAPI                  │   │
@@ -59,11 +59,11 @@ Keep it open across all lectures. Every module adds one layer.
   │  │ • model artifact   │  │      │  │  → return prediction     │   │
   │  └─────────┬──────────┘  │      │  └──────────────────────────┘   │
   │            │              │      │           │                      │
-  │  Model Registry           │      │  Docker Container [Module 2]   │
+  │  Model Registry           │      │  Docker Container [Lesson 1.2] │
   │  (staging → production)   │      │  Same env everywhere           │
   └────────────┬──────────────┘      └──────────────────────────────────┘
                │
-               │  [Module 3]
+               │  [Lesson 2.1]
                ▼
   ┌──────────────────────────┐
   │     VERSIONING LAYER     │
@@ -78,7 +78,7 @@ Keep it open across all lectures. Every module adds one layer.
   │  data + code + params    │
   └────────────┬─────────────┘
                │
-               │  [Module 9]
+               │  [Lesson 4.1]
                ▼
   ┌──────────────────────────────────────────────────┐
   │     OPTIMIZATION LAYER                            │
@@ -92,15 +92,15 @@ Keep it open across all lectures. Every module adds one layer.
 
   ── INFRASTRUCTURE ──────────────────────────────────────────────────────────
 
-  [Module 2]  Docker       Everything containerized. No "works on my machine."
+  [Lesson 1.2]  Docker       Everything containerized. No "works on my machine."
 
-  [Module 8]  Prefect      Schedules and monitors the entire pipeline.
-                           Retries failures. Alerts on anomalies.
+  [Lesson 3.3]  Prefect      Schedules and monitors the entire pipeline.
+                             Retries failures. Alerts on anomalies.
 
-  [Module 8]  Spark        Scales the data pipeline beyond one machine.
-                           Partition → distribute → aggregate.
+  [Lesson 3.3]  Spark        Scales the data pipeline beyond one machine.
+                             Partition → distribute → aggregate.
 
-  ── DEPLOYMENT LAYER (Module 10 — coming) ───────────────────────────────────
+  ── DEPLOYMENT LAYER (Lesson 5.1 — coming) ──────────────────────────────────
 
   Cloud Providers          AWS / GCP / Azure managed ML infrastructure.
   (EKS, GKE, AKS)         Your container cluster, auto-scaled.
@@ -115,7 +115,7 @@ Keep it open across all lectures. Every module adds one layer.
   │  replace    │  │  of traffic │  │  envs, flip │  │  on new ver │
   └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘
 
-  ── OBSERVABILITY LAYER (Module 11 — coming) ────────────────────────────────
+  ── OBSERVABILITY LAYER (Lesson 5.2 — coming) ───────────────────────────────
 
   Infrastructure metrics   Latency, throughput, CPU/memory, error rate.
   (Prometheus + Grafana)   Alerts when the system is unhealthy.
@@ -126,7 +126,7 @@ Keep it open across all lectures. Every module adds one layer.
   Model performance        Prediction quality over time (where labels exist).
                            Catches concept drift.
 
-  ── CI/CD LAYER (Module 12 — coming) ────────────────────────────────────────
+  ── CI/CD LAYER (Lesson 5.3 — coming) ───────────────────────────────────────
 
   CI pipeline              On every push: run tests, validate data schema,
   (GitHub Actions)         train a shadow model, compare metrics to baseline.
@@ -141,28 +141,30 @@ Keep it open across all lectures. Every module adds one layer.
 
 ---
 
-## What Each Module Adds to the System
+## What Each Lesson Adds to the System
 
-| Module | What Gets Added | Where in the Diagram | Status |
+| Lesson | What Gets Added | Where in the Diagram | Status |
 |--------|----------------|----------------------|--------|
-| 1 | Serving API (FastAPI) + first container | Serving Layer | ✓ |
-| 2 | Docker depth: images, networking, Compose | Infrastructure | ✓ |
-| 3 | DVC versioning for data + models | Versioning Layer | ✓ |
-| 4 | MLflow: structured run logs + model registry | Training Layer | ✓ |
-| 5 | W&B: cloud tracking + artifact lineage | Training Layer | ✓ |
-| 6 | Data pipeline: ingest + validate + features | Data Layer | ✓ |
-| 7 | Feature store: offline + online, training-serving consistency | Data Layer | ✓ |
-| 8 | Orchestration (Prefect) + distribution (Spark) | Infrastructure | ✓ |
-| 9 | Compression: pruning + quantization + distillation + ONNX | Optimization Layer | ✓ |
-| 10 | Cloud + K8s + deployment strategies | Deployment Layer | Coming |
-| 11 | Data drift + model drift + infrastructure observability | Observability Layer | Coming |
-| 12 | CI/CD pipeline + model validation gate + GitOps | CI/CD Layer | Coming |
+| 1.1 | Serving API (FastAPI) + first container | Serving Layer | ✓ |
+| 1.2 | Docker depth: images, networking, Compose | Infrastructure | ✓ |
+| 2.1 | DVC versioning for data + models | Versioning Layer | ✓ |
+| 2.2 | MLflow: structured run logs + model registry | Training Layer | ✓ |
+| 2.3 | W&B: cloud tracking + artifact lineage | Training Layer | ✓ |
+| 3.1 | Data pipeline: ingest + validate + features | Data Layer | ✓ |
+| 3.2 | Feature store: offline + online, training-serving consistency | Data Layer | ✓ |
+| 3.3 | Orchestration (Prefect) + distribution (Spark) | Infrastructure | ✓ |
+| 4.1 | Compression: pruning + quantization + distillation + ONNX | Optimization Layer | ✓ |
+| 4.2 | gRPC serving: binary protocol, streaming, low latency | Serving Layer | Coming |
+| 4.3 | Serialization: TorchScript, Protobuf, format tradeoffs | Optimization Layer | Coming |
+| 5.1 | Cloud + K8s + deployment strategies | Deployment Layer | Coming |
+| 5.2 | Data drift + model drift + infrastructure observability | Observability Layer | Coming |
+| 5.3 | CI/CD pipeline + model validation gate + GitOps | CI/CD Layer | Coming |
 
 ---
 
-## The Three Core Problems
+## The Five Core Problems
 
-Every module in this course is a solution to one of three fundamental problems
+Every lesson in this course is a solution to one of five fundamental problems
 in production ML:
 
 ### Problem 1 — Reproducibility
@@ -171,11 +173,11 @@ in production ML:
 A model that works in a notebook is not reproducible if you can't reconstruct
 the exact data, code, parameters, and environment that produced it.
 
-| Solution | Module |
+| Solution | Lesson |
 |---------|--------|
-| Version data alongside code | DVC — Module 3 |
-| Log every experiment parameter and artifact | MLflow — Module 4, W&B — Module 5 |
-| Containerize the environment | Docker — Module 2 |
+| Version data alongside code | DVC — Lesson 2.1 |
+| Log every experiment parameter and artifact | MLflow — Lesson 2.2, W&B — Lesson 2.3 |
+| Containerize the environment | Docker — Lesson 1.2 |
 
 ### Problem 2 — Consistency
 *"The model behaves differently in training than in production."*
@@ -185,11 +187,11 @@ seen during training differ from what the model receives at inference time.
 This is the most common cause of models that look good in evaluation
 and fail silently in production.
 
-| Solution | Module |
+| Solution | Lesson |
 |---------|--------|
-| One feature definition for training and serving | Feast — Module 7 |
-| Enforce temporal cutoffs during feature engineering | Data Pipeline — Module 6 |
-| Version models that trained and serving both reference | DVC + Registry — Modules 3–5 |
+| One feature definition for training and serving | Feast — Lesson 3.2 |
+| Enforce temporal cutoffs during feature engineering | Data Pipeline — Lesson 3.1 |
+| Version models that training and serving both reference | DVC + Registry — Lessons 2.1–2.3 |
 
 ### Problem 3 — Scalability
 *"It works on my laptop but fails on production data."*
@@ -197,13 +199,13 @@ and fail silently in production.
 Single-machine compute, unscheduled pipelines, and models too large to deploy
 are all scalability failures at different layers of the system.
 
-| Solution | Module |
+| Solution | Lesson |
 |---------|--------|
-| Distribute computation across many cores | Spark — Module 8 |
-| Schedule and monitor pipelines reliably | Prefect — Module 8 |
-| Compress models for deployment targets | Compression — Module 9 |
-| Containerize for hardware-agnostic deployment | Docker — Module 2 |
-| Scale the serving layer across many nodes | K8s — Module 10 |
+| Distribute computation across many cores | Spark — Lesson 3.3 |
+| Schedule and monitor pipelines reliably | Prefect — Lesson 3.3 |
+| Compress models for deployment targets | Compression — Lesson 4.1 |
+| Containerize for hardware-agnostic deployment | Docker — Lesson 1.2 |
+| Scale the serving layer across many nodes | K8s — Lesson 5.1 |
 
 ### Problem 4 — Observability
 *"The model was working. Now it isn't. We have no idea when it broke or why."*
@@ -212,11 +214,11 @@ A deployed model is a black box unless you instrument it. Data drifts.
 User behavior changes. A feature pipeline silently starts producing nulls.
 Without observability, you find out when a customer complains — not before.
 
-| Solution | Module |
+| Solution | Lesson |
 |---------|--------|
-| Detect input distribution shift before accuracy drops | Evidently / Whylogs — Module 11 |
-| Track model performance over time with live labels | Model monitoring — Module 11 |
-| Infrastructure health: latency, errors, resource use | Prometheus + Grafana — Module 11 |
+| Detect input distribution shift before accuracy drops | Evidently / Whylogs — Lesson 5.2 |
+| Track model performance over time with live labels | Model monitoring — Lesson 5.2 |
+| Infrastructure health: latency, errors, resource use | Prometheus + Grafana — Lesson 5.2 |
 
 ### Problem 5 — Automation
 *"Every deployment is manual. One human error ships a broken model."*
@@ -225,11 +227,11 @@ A system that requires manual steps at every stage is fragile at scale.
 CI/CD removes human error from the critical path by making the pipeline
 the gatekeeper, not the engineer.
 
-| Solution | Module |
+| Solution | Lesson |
 |---------|--------|
-| Automatically test code and validate data on every commit | CI pipeline — Module 12 |
-| Block deployments where the new model underperforms the old | Model validation gate — Module 12 |
-| Deploy automatically when all gates pass | CD pipeline / GitOps — Module 12 |
+| Automatically test code and validate data on every commit | CI pipeline — Lesson 5.3 |
+| Block deployments where the new model underperforms the old | Model validation gate — Lesson 5.3 |
+| Deploy automatically when all gates pass | CD pipeline / GitOps — Lesson 5.3 |
 
 ---
 
@@ -260,35 +262,23 @@ The system improves continuously because each flow feeds the next.
 
 ```
                         ┌────────────────┐
-                        │   Module 12    │ CI/CD — automate the full loop
+                        │  Lessons 5.1–3 │ Production Engineering
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
-                        │   Module 11    │ Monitoring + Observability
+                        │  Lessons 4.1–3 │ Model Optimization & Serving
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
-                        │   Module 10    │ Cloud + K8s + deployment strategies
+                        │  Lessons 3.1–3 │ Data Engineering
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
-                        │   Module 9     │ Compression → ONNX
+                        │  Lessons 2.1–3 │ Reproducibility
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
-                        │  Modules 6-8   │ Data: pipelines, feature store, scale
-                        └──────┬─────────┘
-                               │
-                        ┌──────┴─────────┐
-                        │  Modules 4-5   │ Experiment tracking, model registry
-                        └──────┬─────────┘
-                               │
-                        ┌──────┴─────────┐
-                        │   Module 3     │ Versioning: data + models
-                        └──────┬─────────┘
-                               │
-                        ┌──────┴─────────┐
-                        │  Modules 1-2   │ Serving + containers (foundation)
+                        │  Lessons 1.1–2 │ The ML System (foundation)
                         └────────────────┘
 ```
 
@@ -326,6 +316,7 @@ a human mistake from shipping a broken model?"
 | **Quantization** | Reducing weight precision (FP32 → INT8) |
 | **Distillation** | Training a small model to mimic a large one |
 | **ONNX** | Hardware-agnostic model format for deployment |
+| **gRPC** | Binary RPC protocol — lower latency and higher throughput than REST |
 | **Kubernetes (K8s)** | System that schedules and manages containers across a cluster of machines |
 | **Rolling deployment** | Replace old pods one at a time — zero downtime, but mixed versions coexist briefly |
 | **Canary deployment** | Route a small % of traffic to the new version; watch metrics before full rollout |
