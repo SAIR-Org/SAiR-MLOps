@@ -1,3 +1,16 @@
+# Module 5 — Experiment Tracking with Weights & Biases
+
+> **Lecture 5** — Why self-hosted experiment tracking breaks down for teams, how W&B's artifact lineage solves the data provenance problem, and the LSTM demo as a complete multi-stage pipeline with full traceability.
+
+| | |
+|---|---|
+| **Problem this solves** | Two problems MLflow doesn't solve out of the box: (1) shared visibility — your teammate can't see your local MLflow server; (2) data provenance — you know which model won, but not which data version trained it. |
+| **Mental model** | W&B is a cloud-native MLflow with one extra layer: **artifacts**. An artifact is any versioned file (dataset, model, evaluation). `use_artifact()` creates a lineage edge. The full chain — raw data → processed data → model — becomes a queryable graph. |
+| **What the lecture demonstrates** | Two demos: (1) a two-stage sklearn pipeline with explicit artifact hand-off between data upload and training; (2) a three-stage LSTM pipeline showing real-time training curves, model checkpointing with aliases, and the full lineage graph in the W&B UI |
+| **Where this fits** | W&B completes the **Training Layer** alongside MLflow. The key addition is artifact lineage — you can trace any production model back through its training run to the exact dataset version that produced it. |
+
+---
+
 # Weights & Biases — Concepts & Guide
 
 Demo: `sklearn_demo.ipynb` (house price prediction) + `ts_lstm_demo.ipynb` (sales forecasting LSTM).

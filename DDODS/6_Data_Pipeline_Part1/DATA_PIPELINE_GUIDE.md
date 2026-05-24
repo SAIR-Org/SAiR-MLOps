@@ -1,3 +1,16 @@
+# Module 6 — Data Pipeline: Building Clean Training Data
+
+> **Lecture 6** — Why manually cleaned notebooks are not pipelines, how the temporal cutoff eliminates the most common form of data leakage, and how to build a repeatable feature engineering process with an explicit validation layer.
+
+| | |
+|---|---|
+| **Problem this solves** | A model trained on leaked data passes evaluation and fails in production. The root cause is almost always a temporal error: features were computed using information that wouldn't have existed at prediction time. A structured pipeline enforces the boundary. |
+| **Mental model** | The cutoff is a wall in time. Everything to the left of the wall is what your model can see. Everything to the right is what it is predicting. Any feature that crosses the wall is leakage. Build the pipeline so the wall is enforced structurally, not by convention. |
+| **What the lecture demonstrates** | Ingesting from three source formats (CSV, JSON, SQLite) → validating schema and distributions → engineering RFM features with a strict cutoff → generating churn labels from the label window → splitting temporally (not randomly) |
+| **Where this fits** | This module builds the **Data Layer** — the foundation of the system. All upstream modules (serving, tracking, versioning) assume clean, correctly-labeled training data. This module is where that data is built. |
+
+---
+
 # Data Pipeline Part 1 — Concepts & Guide
 
 Demo: `data_pipeline.ipynb` — Multi-source ingestion, validation, RFM feature engineering, churn labeling.

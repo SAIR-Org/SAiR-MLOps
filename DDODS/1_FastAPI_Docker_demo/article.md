@@ -1,3 +1,16 @@
+# Module 1 — Serving a Model in Production
+
+> **Lecture 1** — What production ML actually is, why it is harder than training, and how to serve your first model as a real API inside a container.
+
+| | |
+|---|---|
+| **Problem this solves** | A trained model sitting in a notebook delivers no value. Getting it into a running service that other systems can call is the first engineering problem in the ML lifecycle. |
+| **Mental model** | Think of your model as a function: `f(features) → prediction`. Production ML is the engineering work of making that function callable, reliable, versioned, and monitorable at scale. |
+| **What the lecture demonstrates** | Training a simple classifier → wrapping it in a FastAPI endpoint → containerizing it with Docker → calling it like any other web service |
+| **Where this fits** | This module builds the **Serving Layer** in the system map — the last step the model reaches before it delivers value. Everything else in the course feeds into this layer. |
+
+---
+
 # Background and Foundations for Machine Learning in Production  
 *MLOps Part 1: An introduction to machine learning in production, covering pitfalls, system-level concerns, and an overview of the full ML lifecycle.*
 

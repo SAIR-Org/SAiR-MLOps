@@ -1,3 +1,16 @@
+# Module 4 — Experiment Tracking with MLflow
+
+> **Lecture 4** — Why unstructured experiment logs fail at scale, how MLflow turns every training run into a reproducible record, and how the model registry creates a clean handoff from experimentation to deployment.
+
+| | |
+|---|---|
+| **Problem this solves** | After 20 experiments, you cannot answer: "What were the exact parameters for that 97% run?" Without structured logging, experiment results live in comments, memory, and spreadsheets — none of which survive team growth or time. |
+| **Mental model** | MLflow is structured logging for ML. Each run is a record with three parts: what went **in** (params), what came **out** (metrics), and what was **produced** (artifacts). The registry is the promotion system: experiments → staging → production. |
+| **What the lecture demonstrates** | Training three classifiers in a loop → logging params/metrics/models to MLflow → comparing runs in the UI → registering the best model → promoting it to Production stage |
+| **Where this fits** | MLflow sits in the **Training Layer**. It connects experimentation (notebooks) to deployment (model registry). The serving system loads by stage (`Production`), not by run ID — making model updates independent of serving code. |
+
+---
+
 # MLflow Experiment Tracking — Concepts & Guide
 
 Demo: `exp-tracking.ipynb` — Iris classification, three-model comparison and registry.

@@ -1,3 +1,16 @@
+# Module 8 — Orchestration and Scale: Prefect + Spark
+
+> **Lecture 8** — The two distinct problems that end a notebook pipeline's usefulness: scale (data too large for one machine) and reliability (a pipeline that runs unattended must recover from failure). Two tools, two problems.
+
+| | |
+|---|---|
+| **Problem this solves** | A pipeline that works in a notebook runs once, manually. A production pipeline runs on a schedule, handles failures gracefully, retries automatically, and processes data that may be larger than any single machine's memory. These require different infrastructure. |
+| **Mental model** | Orchestration and distribution are orthogonal. Prefect answers: *"when does this run, and what happens if it fails?"* Spark answers: *"how do we process data that doesn't fit on one machine?"* A mature system needs both — independently. |
+| **What the lecture demonstrates** | Spark: a PySpark ML pipeline that partitions data across workers — the same logic as pandas but distributed; Prefect: a flow with tasks, retries, scheduling, and a UI showing run history and failures |
+| **Where this fits** | This module adds the **Infrastructure layer** — Prefect schedules the entire system shown in the map; Spark scales the Data Layer to production data volumes. |
+
+---
+
 # Data Pipeline Part 3 — Orchestration & Distribution
 
 Sub-demos: `spark-demo/` — distributed computation with PySpark. `prefect-demo/` — workflow orchestration with Prefect.

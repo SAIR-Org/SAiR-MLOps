@@ -1,3 +1,16 @@
+# Module 3 — Data Versioning with DVC
+
+> **Lecture 3** — Why git alone cannot version ML projects, how DVC separates data storage from data references, and how to make any training result reproducible from a single commit.
+
+| | |
+|---|---|
+| **Problem this solves** | You got 91% accuracy last Tuesday. Today you can't reproduce it because you don't know which version of the data produced it. Without data versioning, model experiments are not reproducible. |
+| **Mental model** | DVC works like git but for large files. The file stays in a remote store (S3, GCS, local cache). Git tracks a small `.dvc` pointer file. Checking out a git commit restores both the code and the exact data it was written for. |
+| **What the lecture demonstrates** | Initializing DVC in a git repo → adding a dataset → pushing to a remote → switching between two dataset versions → seeing how code + data versions stay in sync |
+| **Where this fits** | DVC is the **Versioning Layer** in the system map. It sits between the training run and the model registry — ensuring every artifact is traceable to the exact data that produced it. |
+
+---
+
 # Data Versioning with DVC — Concepts & Guide
 
 Demo: `version-project/sample/` — a git+DVC project tracking two versions of a dataset.

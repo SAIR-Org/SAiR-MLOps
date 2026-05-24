@@ -1,3 +1,16 @@
+# Module 9 — Model Compression and Deployment Optimization
+
+> **Lecture 9** — Training optimizes for accuracy. Deployment optimizes for latency, memory, and cost. The gap between them is real in almost every production system. Pruning, quantization, distillation, and ONNX export are the tools that close it.
+
+| | |
+|---|---|
+| **Problem this solves** | A model that achieves 94% accuracy on a data center GPU may require 400ms and 2GB RAM per inference. An edge device has 50ms and 256MB. The model that trained cannot be the model that deploys — compression is the engineering work that bridges them. |
+| **Mental model** | Compression is a layered stack, not a single technique: prune redundant weights → quantize remaining weights to lower precision → optionally replace with a compact distilled model → export to ONNX for hardware-agnostic deployment. Each layer is independent and additive. |
+| **What the lecture demonstrates** | Sub-demo 1 (pruning): unstructured and structured pruning on an MNIST MLP — what sparsity means and when it actually saves compute. Sub-demo 2 (quantization): INT8 post-training quantization with calibration. Sub-demo 3 (KD): teacher-student training with soft labels. Sub-demo 4 (ONNX): exporting to ONNX, inspecting the protobuf graph, and benchmarking ORT optimization levels. |
+| **Where this fits** | This module adds the **Optimization Layer** — the last step before a model reaches a production deployment target. The output of this module is an ONNX file that any inference runtime can consume. |
+
+---
+
 # Model Compression & Optimization — Concepts & Overview
 
 Sub-demos: `pruning/` — unstructured and structured pruning on MNIST MLP. `quantization/` — INT8/FP16 weight reduction. `distillation/` — training a small model from a large one.

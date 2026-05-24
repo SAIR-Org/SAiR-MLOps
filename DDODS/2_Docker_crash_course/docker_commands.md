@@ -1,3 +1,16 @@
+# Module 2 — Docker: Making Environments Reproducible
+
+> **Lecture 2** — How containers work under the hood, why they solve the "works on my machine" problem, and how Docker Compose wires multi-service systems together.
+
+| | |
+|---|---|
+| **Problem this solves** | Software that works on your laptop fails on the server because the environments differ. This happens in every ML deployment if you don't address it explicitly. |
+| **Mental model** | A container is not a virtual machine. It is a process with an isolated view of the filesystem and network — running on the same OS kernel as the host, with all dependencies baked into its image. |
+| **What the lecture demonstrates** | Building an image → running a container → wiring Node.js + MongoDB + Mongo Express with Docker Compose → understanding port mapping and volume mounts |
+| **Where this fits** | Docker is **infrastructure** in the system map. Every other component — the serving API, the training job, the pipeline — runs inside a container. This module explains why and how. |
+
+---
+
 # Docker Crash Course — Concepts & Guide
 
 Demo: `Dockerfile`, `docker-compose.yml`, `server.js` — Node.js profile app + MongoDB + Mongo Express.
