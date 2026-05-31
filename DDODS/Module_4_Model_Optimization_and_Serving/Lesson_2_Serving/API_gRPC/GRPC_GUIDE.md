@@ -87,7 +87,119 @@ Use REST when:
 
 ---
 
-## Part 2 — Protocol Buffers
+## Part 2 — gRPC vs FastAPI: Why Both Exist in This Course
+
+This course teaches FastAPI in Lesson 1.1 and gRPC here. They both serve ML models
+over a network — so why learn two tools?
+
+The answer is that they solve different problems in different parts of the system.
+
+### What FastAPI is built for
+
+FastAPI wraps a Python function behind an HTTP endpoint. It is designed for:
+
+- **Human-facing APIs** — browsers, mobile apps, curl, Postman all speak HTTP/JSON natively
+- **Public APIs** — external developers expect REST; it is the universal contract
+- **Rapid development** — one decorator, automatic Swagger docs, no code generation
+- **Simple request patterns** — one client sends one request, gets one response
+
+```python
+@app.post("/predict")
+def predict(input: InputSchema) -> OutputSchema:
+    return model(input)
+```
+
+This is exactly right for Lesson 1.1: a data scientist wraps a trained model and exposes
+it so anything can call it. The simplicity is the point.
+
+---
+
+### What gRPC is built for
+
+gRPC is a contract-first RPC framework. It is designed for:
+
+- **Service-to-service communication** — one backend calls another; no human is involved
+- **High-throughput pipelines** — thousands of inference requests per second
+- **Typed contracts** — the `.proto` file is the schema; both sides generate code from it
+- **Streaming** — server-side, client-side, or bidirectional — REST has no clean equivalent
+- **Multi-language systems** — Python model server called by a Go API gateway or C++ client
+
+```protobuf
+service MLModel {
+  rpc Predict(PredictRequest) returns (PredictResponse);
+  rpc PredictStream(stream PredictRequest) returns (stream PredictResponse);
+}
+```
+
+---
+
+### The real difference: who is calling the model
+
+```
+Browser / mobile app / external developer
+        │
+        ▼
+  FastAPI  (Lesson 1.1)
+  REST/JSON over HTTP/1.1
+  Human-readable, standard, easy to debug
+        │
+        ▼
+  Internal ML model server
+        │
+        ▼
+  gRPC  (this lesson)
+  Binary Protobuf over HTTP/2
+  Fast, typed, streaming-capable
+        │
+        ▼
+  Another internal service (recommendation engine, fraud model, etc.)
+```
+
+In production, a system often has both running simultaneously:
+- FastAPI handles the external user-facing endpoint (the "front door")
+- gRPC handles the internal calls between model servers, feature pipelines, and downstream services (the "plumbing")
+
+---
+
+### Side-by-side comparison
+
+| | FastAPI | gRPC |
+|---|---|---|
+| Protocol | HTTP/1.1 | HTTP/2 |
+| Payload format | JSON (text) | Protobuf (binary) |
+| Schema | Optional (Pydantic) | Mandatory (`.proto`) |
+| Code generation | None needed | Required (`protoc`) |
+| Browser support | Native | Needs gRPC-web proxy |
+| Streaming | Limited | First-class |
+| Typical latency | Higher (text parse) | Lower (binary) |
+| Debugging | Easy (curl, browser) | Needs `grpcurl` |
+| Setup complexity | Low | Medium |
+| **Best for** | Public APIs, browser clients | Microservices, high-throughput, internal RPC |
+
+---
+
+### When to choose which
+
+**Choose FastAPI when:**
+- Your client is a browser, mobile app, or external developer
+- You want auto-generated Swagger docs
+- You need to ship quickly and the load is moderate
+- Human readability and debuggability matter more than raw performance
+
+**Choose gRPC when:**
+- Service A is calling Service B — both are backend services you control
+- You need thousands of requests per second or streaming predictions
+- You want a strictly typed, versioned contract that both sides generate code from
+- You are building a multi-language system (Python model, Go gateway, C++ client)
+
+**Use both when:**
+- You have a public REST API (FastAPI) that internally calls model servers over gRPC
+- This is the standard production ML architecture: REST at the edge, gRPC in the interior
+
+---
+
+## Part 3 — Protocol Buffers
+
 
 ### The .proto file
 
@@ -139,7 +251,7 @@ Field numbers (e.g., `= 1`, `= 2`) are the binary identity of each field. The fi
 
 ---
 
-## Part 3 — Code Generation
+## Part 4 — Code Generation
 
 The `.proto` file is not Python — it must be compiled into Python stubs before the server or client can use it.
 
@@ -178,7 +290,7 @@ Contains:
 
 ---
 
-## Part 4 — Server Architecture
+## Part 5 — Server Architecture
 
 ### The Servicer
 
@@ -224,7 +336,7 @@ server.wait_for_termination()
 
 ---
 
-## Part 5 — Client Architecture
+## Part 6 — Client Architecture
 
 ### Channel and stub
 
@@ -256,7 +368,7 @@ gRPC status codes map to familiar HTTP concepts: `NOT_FOUND` (404), `INTERNAL` (
 
 ---
 
-## Part 6 — Docker Deployment
+## Part 7 — Docker Deployment
 
 ### What the Dockerfile does
 
@@ -295,7 +407,7 @@ The client always connects to `localhost:5000` (host port). Docker forwards it t
 
 ---
 
-## Part 7 — gRPC vs REST: When to Use Which
+## Part 8 — gRPC vs REST: When to Use Which
 
 | Criterion | REST / JSON | gRPC / Protobuf |
 |---|---|---|
@@ -311,7 +423,7 @@ The client always connects to `localhost:5000` (host port). Docker forwards it t
 
 ---
 
-## Part 8 — The Three-File Pipeline
+## Part 9 — The Three-File Pipeline
 
 ```
 train.py          →  model.pkl
