@@ -14,8 +14,7 @@ format standardization, and high-throughput serving protocols.
 | Lesson | Topic | Problem It Solves | Guide | Status |
 |--------|-------|-------------------|-------|--------|
 | 4.1 | [Compression](Lesson_1_Compression/) | The model is too large or too slow for the deployment target | [COMPRESSION_OVERVIEW.md](Lesson_1_Compression/COMPRESSION_OVERVIEW.md) | ✓ |
-| 4.2 | gRPC Serving | REST is not fast enough for high-throughput inference | — | Coming |
-| 4.3 | Serialization | Model format is coupled to the training framework | — | Coming |
+| 4.2 | [Serving](Lesson_2_Serving/) | The model is coupled to Python and can't reach C++ environments or high-throughput service interfaces | [TorchScript](Lesson_2_Serving/TorchScript/TORCHSCRIPT_GUIDE.md) · [LibTorch](Lesson_2_Serving/LibTorch/LIBTORCH_GUIDE.md) · [gRPC](Lesson_2_Serving/API_gRPC/GRPC_GUIDE.md) | ✓ |
 
 ---
 

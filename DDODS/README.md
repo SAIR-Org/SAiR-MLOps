@@ -145,11 +145,11 @@ MODULE 4 — Model Optimization & Serving
   Lesson 4.1   The model is too large or too slow for the deployment target.
                ↳ Prune → Quantize → Distill → Export to ONNX.
 
-  Lesson 4.2   REST is not fast enough for high-throughput inference.    [coming]
-               ↳ gRPC: binary protocol, streaming, lower latency.
-
-  Lesson 4.3   The model format is coupled to the training framework.     [coming]
-               ↳ Serialization: TorchScript, Protobuf, format tradeoffs.
+  Lesson 4.2   The model is coupled to Python and can't reach C++ environments
+               or high-throughput service interfaces.
+               ↳ TorchScript compiles the model to portable IR.
+                 LibTorch runs it in C++ with no Python.
+                 gRPC serves it over a binary RPC interface.
 
 MODULE 5 — Production Engineering
 ─────────────────────────────────────────────────────────────────
@@ -220,8 +220,7 @@ Return to it when a concept feels isolated — the system view reconnects it.
 | Lesson | Topic | Problem It Solves | Guide | Status |
 |--------|-------|-------------------|-------|--------|
 | 4.1 | [Compression](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/) | The model is too large or too slow for the deployment target | [COMPRESSION_OVERVIEW.md](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/COMPRESSION_OVERVIEW.md) | ✓ |
-| 4.2 | gRPC Serving | REST is not fast enough for high-throughput inference | — | Coming |
-| 4.3 | Serialization | Model format is coupled to the training framework | — | Coming |
+| 4.2 | [Serving](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/) | The model is coupled to Python and can't reach C++ environments or high-throughput service interfaces | [TorchScript](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/TorchScript/TORCHSCRIPT_GUIDE.md) · [LibTorch](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/LibTorch/LIBTORCH_GUIDE.md) · [gRPC](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/API_gRPC/GRPC_GUIDE.md) | ✓ |
 
 ### Module 5 — Production Engineering
 *A deployed model is a system. Systems require infrastructure.*

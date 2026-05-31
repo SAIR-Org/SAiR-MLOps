@@ -46,6 +46,7 @@ out/
 # ── Trained model binaries ───────────────────────────────────────
 # Generated artefacts. Regenerate by running the demo.
 *.pth
+*.pt
 *.pkl
 *.ckpt
 *.joblib
