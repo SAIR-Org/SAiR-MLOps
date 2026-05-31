@@ -34,36 +34,82 @@
 ## Quick Start (local, no Docker)
 
 ```bash
-# 1. Install dependencies
-cd API_gRPC
+# 1. Move into the demo directory and install dependencies
+cd Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/API_gRPC
 uv sync
 
 # 2. Train and save the model
 uv run train.py
 
 # 3. Generate gRPC Python stubs from the .proto file
+#    This creates prediction_pb2.py and prediction_pb2_grpc.py
 uv run python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. prediction.proto
 
-# 4. Start the server (leave this terminal running)
+# 4. Start the server — keep this terminal open
 uv run server.py
+```
 
-# 5. In a second terminal — send prediction requests
-cd API_gRPC
+Open a **second terminal**, then:
+
+```bash
+cd Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/API_gRPC
 uv run client.py
 ```
+
+**Expected output (server terminal):**
+```
+Model loaded successfully
+Server started — listening on port 5000
+  request: [1.0] → 2.0000
+  request: [3.5] → 7.0000
+  request: [5.0] → 10.0000
+  request: [10.0] → 20.0000
+```
+
+**Expected output (client terminal):**
+```
+Connecting to gRPC server at localhost:5000...
+
+Input      : 1.0
+Prediction : 2.00
+Model ver  : v1.0
+------------------------------
+Input      : 3.5
+Prediction : 7.00
+Model ver  : v1.0
+------------------------------
+Input      : 5.0
+Prediction : 10.00
+Model ver  : v1.0
+------------------------------
+Input      : 10.0
+Prediction : 20.00
+Model ver  : v1.0
+------------------------------
+```
+
+---
 
 ## Quick Start (Docker)
 
 ```bash
-# 1. Train the model first (Docker copies the saved model.pkl into the image)
+# 1. Move into the demo directory and train the model
+#    (Docker copies model.pkl into the image at build time)
+cd Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/API_gRPC
 uv run train.py
 
-# 2. Build the image (generates stubs inside the container)
+# 2. Build the image — stubs are generated inside the container
 docker build -t grpc-server .
 
 # 3. Run the container, mapping host port 5000 → container port 5000
 docker run -p 5000:5000 grpc-server
+```
 
-# 4. In a second terminal — client connects to localhost:5000
+Open a **second terminal**, then:
+
+```bash
+cd Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/API_gRPC
 uv run client.py
 ```
+
+Expected output is the same as the local run above.
