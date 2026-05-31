@@ -88,6 +88,21 @@ Keep it open across all lectures. Every lesson adds one layer.
   │  Model goes from "best accuracy in training"     │
   │  to "deployable in production":                  │
   │  smaller, faster, hardware-agnostic              │
+  └────────────────────┬─────────────────────────────┘
+                       │  [Lesson 4.2]
+                       ▼
+  ┌──────────────────────────────────────────────────┐
+  │     SERVING LAYER                                │
+  │                                                  │
+  │  TorchScript   Compile model → portable IR       │
+  │                No Python needed at runtime       │
+  │                                                  │
+  │  LibTorch      Load IR in C++ via                │
+  │                torch::jit::load()                │
+  │                                                  │
+  │  gRPC          Serve over binary RPC             │
+  │                Protobuf contract, HTTP/2          │
+  │                Lower latency than REST           │
   └──────────────────────────────────────────────────┘
 
   ── INFRASTRUCTURE ──────────────────────────────────────────────────────────
@@ -154,8 +169,7 @@ Keep it open across all lectures. Every lesson adds one layer.
 | 3.2 | Feature store: offline + online, training-serving consistency | Data Layer | ✓ |
 | 3.3 | Orchestration (Prefect) + distribution (Spark) | Infrastructure | ✓ |
 | 4.1 | Compression: pruning + quantization + distillation + ONNX | Optimization Layer | ✓ |
-| 4.2 | gRPC serving: binary protocol, streaming, low latency | Serving Layer | Coming |
-| 4.3 | Serialization: TorchScript, Protobuf, format tradeoffs | Optimization Layer | Coming |
+| 4.2 | Serving: TorchScript + LibTorch (C++) + gRPC | Serving Layer | ✓ |
 | 5.1 | Cloud + K8s + deployment strategies | Deployment Layer | Coming |
 | 5.2 | Data drift + model drift + infrastructure observability | Observability Layer | Coming |
 | 5.3 | CI/CD pipeline + model validation gate + GitOps | CI/CD Layer | Coming |
@@ -266,7 +280,7 @@ The system improves continuously because each flow feeds the next.
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
-                        │  Lessons 4.1–3 │ Model Optimization & Serving
+                        │  Lessons 4.1–2 │ Model Optimization & Serving
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
@@ -316,6 +330,8 @@ a human mistake from shipping a broken model?"
 | **Quantization** | Reducing weight precision (FP32 → INT8) |
 | **Distillation** | Training a small model to mimic a large one |
 | **ONNX** | Hardware-agnostic model format for deployment |
+| **TorchScript** | Compiled, statically-typed subset of Python — makes PyTorch models portable and Python-free |
+| **LibTorch** | PyTorch's C++ runtime — loads a TorchScript `.pt` file and runs inference without Python |
 | **gRPC** | Binary RPC protocol — lower latency and higher throughput than REST |
 | **Kubernetes (K8s)** | System that schedules and manages containers across a cluster of machines |
 | **Rolling deployment** | Replace old pods one at a time — zero downtime, but mixed versions coexist briefly |
