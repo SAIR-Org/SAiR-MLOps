@@ -1,6 +1,3 @@
-## Here's the upgraded SYSTEM_MAP.md with Lesson 5.1 (Kubernetes) integrated:
-
-```markdown
 # System Map — The Production ML System
 
 This document shows the complete system this course builds.
