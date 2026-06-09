@@ -1,3 +1,6 @@
+## Here's the upgraded SYSTEM_MAP.md with Lesson 5.1 (Kubernetes) integrated:
+
+```markdown
 # System Map — The Production ML System
 
 This document shows the complete system this course builds.
@@ -92,7 +95,7 @@ Keep it open across all lectures. Every lesson adds one layer.
                        │  [Lesson 4.2]
                        ▼
   ┌──────────────────────────────────────────────────┐
-  │     SERVING LAYER                                │
+  │     SERVING TRANSPORT LAYER                       │
   │                                                  │
   │  TorchScript   Compile model → portable IR       │
   │                No Python needed at runtime       │
@@ -115,15 +118,39 @@ Keep it open across all lectures. Every lesson adds one layer.
   [Lesson 3.3]  Spark        Scales the data pipeline beyond one machine.
                              Partition → distribute → aggregate.
 
-  ── DEPLOYMENT LAYER (Lesson 5.1 — coming) ──────────────────────────────────
+  ── DEPLOYMENT LAYER (Lesson 5.1) ───────────────────────────────────────────
 
-  Cloud Providers          AWS / GCP / Azure managed ML infrastructure.
-  (EKS, GKE, AKS)         Your container cluster, auto-scaled.
+  Kubernetes (Kind → EKS/GKE/AKS)
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                           Kubernetes Cluster                          │
+  │  ┌────────────────────────────────────────────────────────────────┐  │
+  │  │                      Control Plane                             │  │
+  │  │  API Server  │  etcd  │  Scheduler  │  Controller Manager      │  │
+  │  └───────────────┬────────────────────────────────────────────────┘  │
+  │                  │                                                    │
+  │  ┌───────────────┴────────────────────────────────────────────────┐  │
+  │  │                         Worker Nodes                            │  │
+  │  │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐  │  │
+  │  │  │ Node 1          │    │ Node 2          │    │ Node 3      │  │  │
+  │  │  │ ┌─────────────┐ │    │ ┌─────────────┐ │    │ ┌─────────┐ │  │  │
+  │  │  │ │ Pod: Model  │ │    │ │ Pod: Model  │ │    │ │ Pod:    │ │  │  │
+  │  │  │ │ replica 1   │ │    │ │ replica 2   │ │    │ │ Model   │ │  │  │
+  │  │  │ └─────────────┘ │    │ └─────────────┘ │    │ │ replica3│ │  │  │
+  │  │  │ ┌─────────────┐ │    │ ┌─────────────┐ │    │ └─────────┘ │  │  │
+  │  │  │ │ Service     │ │    │ │ kube-proxy  │ │    │             │  │  │
+  │  │  │ │ (load balancer)  │    │ └─────────────┘ │    │             │  │  │
+  │  │  └─────────────┘ │    └─────────────────┘    └─────────────┘  │  │
+  │  └─────────────────────────────────────────────────────────────────┘  │
+  └──────────────────────────────────────────────────────────────────────┘
 
-  Kubernetes               Orchestrates containers at scale.
-                           Scheduler → pods → services → ingress.
+  Core Abstractions (from Lesson 5.1)
+  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+  │    Pod      │  │ Deployment  │  │  Service    │  │  Namespace  │
+  │ 1+ container│  │  replica    │  │ stable IP   │  │  logical    │
+  │ shared net  │  │  management │  │ + DNS + LB  │  │  isolation  │
+  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘
 
-  Deployment Strategies
+  Deployment Strategies (implemented in Kubernetes)
   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
   │   Rolling   │  │   Canary    │  │ Blue-Green  │  │   Shadow    │
   │  Gradual    │  │  Small %    │  │  Two live   │  │  No traffic │
@@ -169,8 +196,8 @@ Keep it open across all lectures. Every lesson adds one layer.
 | 3.2 | Feature store: offline + online, training-serving consistency | Data Layer | ✓ |
 | 3.3 | Orchestration (Prefect) + distribution (Spark) | Infrastructure | ✓ |
 | 4.1 | Compression: pruning + quantization + distillation + ONNX | Optimization Layer | ✓ |
-| 4.2 | Serving: TorchScript + LibTorch (C++) + gRPC | Serving Layer | ✓ |
-| 5.1 | Cloud + K8s + deployment strategies | Deployment Layer | Coming |
+| 4.2 | Serving transport: TorchScript + LibTorch + gRPC | Serving Transport Layer | ✓ |
+| 5.1 | Kubernetes: pods, deployments, services, rolling updates, self-healing, auto-scaling | Deployment Layer | ✓ |
 | 5.2 | Data drift + model drift + infrastructure observability | Observability Layer | Coming |
 | 5.3 | CI/CD pipeline + model validation gate + GitOps | CI/CD Layer | Coming |
 
@@ -219,7 +246,7 @@ are all scalability failures at different layers of the system.
 | Schedule and monitor pipelines reliably | Prefect — Lesson 3.3 |
 | Compress models for deployment targets | Compression — Lesson 4.1 |
 | Containerize for hardware-agnostic deployment | Docker — Lesson 1.2 |
-| Scale the serving layer across many nodes | K8s — Lesson 5.1 |
+| Scale the serving layer across many nodes with orchestration | Kubernetes — Lesson 5.1 |
 
 ### Problem 4 — Observability
 *"The model was working. Now it isn't. We have no idea when it broke or why."*
@@ -246,6 +273,33 @@ the gatekeeper, not the engineer.
 | Automatically test code and validate data on every commit | CI pipeline — Lesson 5.3 |
 | Block deployments where the new model underperforms the old | Model validation gate — Lesson 5.3 |
 | Deploy automatically when all gates pass | CD pipeline / GitOps — Lesson 5.3 |
+
+---
+
+## What Kubernetes (Lesson 5.1) Adds Specifically
+
+**Before Kubernetes (Lesson 4.2):**
+- One container running on one machine
+- Manual restart if it crashes
+- Manual scaling (change Docker Compose replica count)
+- Downtime during updates
+
+**After Kubernetes (Lesson 5.1):**
+- Multiple containers across multiple nodes in a cluster
+- Self-healing: Kubernetes restarts failed containers automatically
+- Auto-scaling: scale from 2 to 50 replicas based on CPU/requests
+- Rolling updates: zero-downtime model deployments
+- Service discovery: containers find each other via stable DNS names
+- Load balancing: traffic distributed across all replicas
+
+**The Demo in Lesson 5.1:**
+- Train a linear regression model (y=2x)
+- Wrap it in FastAPI + Docker
+- Deploy to local Kind cluster
+- Configure 2 replicas with rolling updates
+- Test self-healing (delete a pod → it comes back)
+- Test scaling (2 → 5 replicas)
+- Test rolling update (v1 → v2 with zero downtime)
 
 ---
 
@@ -277,22 +331,34 @@ The system improves continuously because each flow feeds the next.
 ```
                         ┌────────────────┐
                         │  Lessons 5.1–3 │ Production Engineering
+                        │   (K8s, Mon,   │
+                        │    CI/CD)      │
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
                         │  Lessons 4.1–2 │ Model Optimization & Serving
+                        │ (Compression,  │
+                        │ TorchScript,   │
+                        │ LibTorch, gRPC)│
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
                         │  Lessons 3.1–3 │ Data Engineering
+                        │ (Pipelines,    │
+                        │ Feature Store, │
+                        │ Prefect, Spark)│
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
                         │  Lessons 2.1–3 │ Reproducibility
+                        │ (DVC, MLflow,  │
+                        │  W&B)          │
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
                         │  Lessons 1.1–2 │ The ML System (foundation)
+                        │ (FastAPI,      │
+                        │  Docker)       │
                         └────────────────┘
 ```
 
@@ -333,7 +399,16 @@ a human mistake from shipping a broken model?"
 | **TorchScript** | Compiled, statically-typed subset of Python — makes PyTorch models portable and Python-free |
 | **LibTorch** | PyTorch's C++ runtime — loads a TorchScript `.pt` file and runs inference without Python |
 | **gRPC** | Binary RPC protocol — lower latency and higher throughput than REST |
-| **Kubernetes (K8s)** | System that schedules and manages containers across a cluster of machines |
+| **Kubernetes (K8s)** | Container orchestration system that schedules and manages containers across a cluster of machines |
+| **Pod** | Smallest deployable unit in Kubernetes; 1+ containers sharing network namespace |
+| **Deployment** | Kubernetes controller that manages replicas, rolling updates, and rollbacks |
+| **Service** | Kubernetes abstraction that provides a stable IP, DNS name, and load balancing for pods |
+| **ReplicaSet** | Ensures a specified number of pod replicas are running at all times |
+| **Ingress** | Exposes HTTP/HTTPS routes from outside the cluster to services |
+| **Control plane** | Kubernetes brain: API server, etcd, scheduler, controller manager |
+| **Worker node** | Kubernetes muscle: kubelet, kube-proxy, container runtime |
+| **kubectl** | Command-line interface for interacting with Kubernetes clusters |
+| **Kind** | Kubernetes in Docker — runs a local cluster for development |
 | **Rolling deployment** | Replace old pods one at a time — zero downtime, but mixed versions coexist briefly |
 | **Canary deployment** | Route a small % of traffic to the new version; watch metrics before full rollout |
 | **Blue-green deployment** | Run two identical environments; flip all traffic at once; easy rollback |
@@ -346,3 +421,20 @@ a human mistake from shipping a broken model?"
 | **CD (Continuous Delivery/Deployment)** | Automatically deliver a validated build to production |
 | **Model validation gate** | Automated check that blocks a new model from deploying if it underperforms the current one |
 | **GitOps** | Git is the single source of truth for both infrastructure and application state |
+
+---
+
+## Lesson 5.1 Files Reference
+
+| File | Purpose |
+|------|---------|
+| `train.py` | Trains linear regression model (y=2x) → `model.pkl` |
+| `app.py` | FastAPI server with `/predict` and `/health` endpoints |
+| `test.py` | Client that sends test requests to the API |
+| `Dockerfile` | Containerizes the FastAPI app + model |
+| `deployment.yaml` | Kubernetes Deployment: 2 replicas, rolling update strategy |
+| `service.yaml` | Kubernetes Service: ClusterIP, load balancing across pods |
+| `kind-config.yaml` | Optional Kind cluster configuration |
+| `K8s.md` | Deep-dive learning guide for Kubernetes concepts |
+| `README.md` | Step-by-step commands, experiments, and troubleshooting |
+```
