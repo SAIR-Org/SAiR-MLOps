@@ -1,5 +1,11 @@
 # MLOps from First Principles
 
+<p align="center">
+  <img src="mlops_map.png" alt="MLOps Architecture Map" width="800"/>
+</p>
+
+> *"The goal is not to teach you tools. It is to give you a mental model of the production ML system."*
+
 A companion resource for the video lecture series.
 Open this repo alongside the lectures — not instead of them.
 
@@ -9,13 +15,9 @@ Open this repo alongside the lectures — not instead of them.
 
 The lectures demonstrate. This repo explains.
 
-Each module guide is structured as a lecture companion — the concepts,
-diagrams, and references you need while watching. The code is secondary:
-it is what the demo runs, not what the lecture is about.
+Each module guide is structured as a lecture companion — the concepts, diagrams, and references you need while watching. The code is secondary: it is what the demo runs, not what the lecture is about.
 
-The goal is not to teach you tools. It is to give you a mental model of
-**the production ML system** and show how each tool solves a specific
-failure mode in that system.
+**The goal is not to teach you tools. It is to give you a mental model of the production ML system and show how each tool solves a specific failure mode in that system.**
 
 ---
 
@@ -64,8 +66,14 @@ This is the full system this course assembles, one module at a time.
        │  ── Lesson 4.1 ─────────────────────────────────────────────
        ▼
   Compressed Model
-  (Pruned → Quantized → ONNX export)
+  (Pruning → Quantization → Knowledge Distillation → ONNX export)
   Ready for edge / low-latency deployment
+       │
+       │  ── Lesson 4.2 ─────────────────────────────────────────────
+       ▼
+  Optimized Serving
+  (TorchScript / LibTorch / gRPC)
+  Portable, Python-free, high-throughput inference
 
   ── Lesson 1.2 ───────────────────────────────────────────────────────
   Every component above runs inside a Docker container.
@@ -75,10 +83,9 @@ This is the full system this course assembles, one module at a time.
   Orchestration (Prefect) schedules and monitors the entire pipeline.
   Distribution (Spark) handles data that doesn't fit on one machine.
 
-  ── Lesson 5.1 (coming) ──────────────────────────────────────────────
-  Deployment at scale: cloud providers, Kubernetes, deployment strategies
-  (rolling, canary, blue-green, shadow). The serving layer moves from
-  a single container to a managed, auto-scaling production system.
+  ── Lesson 5.1 ──────────────────────────────────────────────────────
+  Deployment at scale: Kubernetes, cloud providers (AWS/EKS), 
+  deployment strategies (rolling, canary, blue-green, shadow).
 
   ── Lesson 5.2 (coming) ──────────────────────────────────────────────
   Monitoring + Observability: model drift, data drift, infrastructure
@@ -143,7 +150,7 @@ MODULE 3 — Data Engineering for ML
 MODULE 4 — Model Optimization & Serving
 ─────────────────────────────────────────────────────────────────
   Lesson 4.1   The model is too large or too slow for the deployment target.
-               ↳ Prune → Quantize → Distill → Export to ONNX.
+               ↳ Prune → Quantize → Knowledge Distill → Export to ONNX.
 
   Lesson 4.2   The model is coupled to Python and can't reach C++ environments
                or high-throughput service interfaces.
@@ -153,8 +160,9 @@ MODULE 4 — Model Optimization & Serving
 
 MODULE 5 — Production Engineering
 ─────────────────────────────────────────────────────────────────
-  Lesson 5.1   A single container is not a production deployment.         [coming]
-               ↳ Cloud providers, Kubernetes, rolling/canary/blue-green.
+  Lesson 5.1   A single container is not a production deployment.
+               ↳ Kubernetes, cloud providers (AWS/EKS), 
+                 rolling/canary/blue-green deployments.
 
   Lesson 5.2   The model is deployed. How do you know it still works?     [coming]
                ↳ Data drift, model monitoring, Prometheus, Grafana,
@@ -173,16 +181,11 @@ By the end of the course, you have a complete mental model of the system.
 
 ## How to Use This Repo
 
-**During the lecture:** open the module guide and follow along.
-The guide is scannable — it provides the conceptual anchor for what the
-lecture is demonstrating at each step.
-
-**After the lecture:** return to the deep-dive sections in each guide.
-The content deliberately goes further than the video to give you the full
-picture at your own pace.
-
-**For reference:** `SYSTEM_MAP.md` shows where every piece fits.
-Return to it when a concept feels isolated — the system view reconnects it.
+| **When** | **What to do** |
+|----------|----------------|
+| **During the lecture** | Open the module guide and follow along. The guide is scannable — it provides the conceptual anchor for what the lecture is demonstrating at each step. |
+| **After the lecture** | Return to the deep-dive sections in each guide. The content deliberately goes further than the video to give you the full picture at your own pace. |
+| **For reference** | `SYSTEM_MAP.md` shows where every piece fits. Return to it when a concept feels isolated — the system view reconnects it. |
 
 ---
 
@@ -219,7 +222,7 @@ Return to it when a concept feels isolated — the system view reconnects it.
 
 | Lesson | Topic | Problem It Solves | Guide | Status |
 |--------|-------|-------------------|-------|--------|
-| 4.1 | [Compression](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/) | The model is too large or too slow for the deployment target | [COMPRESSION_OVERVIEW.md](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/COMPRESSION_OVERVIEW.md) | ✓ |
+| 4.1 | [Compression](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/) | The model is too large or too slow for the deployment target | [Overview](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/COMPRESSION_OVERVIEW.md) · [Pruning](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/pruning/PRUNING_GUIDE.md) · [Quantization](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/Quantization/QNT_GUIDE.md) · [KD](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/KD/KD_GUIDE.md) · [ONNX](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/onnx/ONNX_GUIDE.md) | ✓ |
 | 4.2 | [Serving](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/) | The model is coupled to Python and can't reach C++ environments or high-throughput service interfaces | [TorchScript](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/TorchScript/TORCHSCRIPT_GUIDE.md) · [LibTorch](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/LibTorch/LIBTORCH_GUIDE.md) · [gRPC](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/API_gRPC/GRPC_GUIDE.md) | ✓ |
 
 ### Module 5 — Production Engineering
@@ -227,9 +230,44 @@ Return to it when a concept feels isolated — the system view reconnects it.
 
 | Lesson | Topic | Problem It Solves | Guide | Status |
 |--------|-------|-------------------|-------|--------|
-| 5.1 | Deployment at Scale | A single container is not a production deployment | — | Coming |
+| 5.1 | [Kubernetes & Cloud](Module_5_Production_Engineering/Lesson_1_K8s/) | A single container is not a production deployment | [K8s.md](Module_5_Production_Engineering/Lesson_1_K8s/K8s.md) · [Cloud Fundamentals](Module_5_Production_Engineering/Lesson_2_Cloud_and_AWS/1-Cloud_Fundemetals.html) · [AWS Intro](Module_5_Production_Engineering/Lesson_2_Cloud_and_AWS/2-aws-intro.html) · [EKS](Module_5_Production_Engineering/Lesson_2_Cloud_and_AWS/3-EKS.html) | ✓ |
 | 5.2 | Monitoring + Observability | The model is deployed — you have no idea if it's still working | — | Coming |
 | 5.3 | CI/CD for ML | Every step above is currently manual | — | Coming |
+
+---
+
+## Module 5 Breakdown
+
+Module 5 covers production-grade infrastructure:
+
+```
+Lesson 5.1 — Kubernetes & Cloud
+├── Kubernetes Fundamentals (K8s.md)
+│   ├── Pods, Services, Deployments
+│   ├── ConfigMaps & Secrets
+│   └── Ingress & Load Balancing
+├── Cloud Providers
+│   ├── Cloud Fundamentals (1-Cloud_Fundemetals.html)
+│   ├── AWS Introduction (2-aws-intro.html)
+│   └── Amazon EKS (3-EKS.html)
+└── Deployment Strategies
+    ├── Rolling Updates
+    ├── Canary Deployments
+    ├── Blue-Green Deployments
+    └── Shadow Deployments
+
+Lesson 5.2 — Monitoring & Observability (Coming)
+├── Data Drift Detection
+├── Model Performance Monitoring
+├── Infrastructure Metrics (Prometheus/Grafana)
+└── Alerting & Incident Response
+
+Lesson 5.3 — CI/CD for ML (Coming)
+├── Automated Testing
+├── Model Validation Gates
+├── Triggered Retraining
+└── GitOps Deployment
+```
 
 ---
 
@@ -238,12 +276,24 @@ Return to it when a concept feels isolated — the system view reconnects it.
 Every module follows the same structure in its guide:
 
 ```
-The Problem        Why production ML needs this — the failure mode it prevents
-The Mental Model   One diagram or analogy that makes the concept stick
-How It Works       The mechanism, independent of the specific tool
-The Lecture        What the demo demonstrates and why
-Where It Fits      Where this module connects to the full system
-Quick Reference    Commands and patterns to use during / after the video
+┌─────────────────────────────────────────────────────────────────┐
+│ The Problem        Why production ML needs this — the failure  │
+│                    mode it prevents                             │
+├─────────────────────────────────────────────────────────────────┤
+│ The Mental Model   One diagram or analogy that makes the       │
+│                    concept stick                                │
+├─────────────────────────────────────────────────────────────────┤
+│ How It Works       The mechanism, independent of the specific  │
+│                    tool                                         │
+├─────────────────────────────────────────────────────────────────┤
+│ The Lecture        What the demo demonstrates and why          │
+├─────────────────────────────────────────────────────────────────┤
+│ Where It Fits      Where this module connects to the full      │
+│                    system                                       │
+├─────────────────────────────────────────────────────────────────┤
+│ Quick Reference    Commands and patterns to use during / after │
+│                    the video                                    │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 The demo code is the last thing to look at, not the first.
@@ -253,13 +303,50 @@ Read the problem and the mental model first — then the code is obvious.
 
 ## Prerequisites
 
-- Python 3.10+
-- `uv` — dependency management (`pip install uv`)
-- Docker Desktop (Modules 1–2)
-- Git (all modules)
-- A W&B account — free at wandb.ai (Module 5)
+- **Python 3.10+** — All Python code uses modern syntax
+- **`uv`** — Fast dependency management (`pip install uv`)
+- **Docker Desktop** — Required for Modules 1–5 (containerization)
+- **Git** — Version control for all modules
+- **W&B Account** — Free at wandb.ai (Module 2.3)
+- **Kubernetes Tools** — For Module 5.1:
+  - `kubectl` — Kubernetes CLI
+  - `kind` or `minikube` — Local Kubernetes cluster
+  - `awscli` — AWS CLI (for EKS deployment)
 
-Run from the project root: `uv run python <path/to/script.py>`
+Run from the project root:
+```bash
+uv run python <path/to/script.py>
+```
+
+---
+
+## Quick Navigation
+
+| **Area** | **Path** | **Key Content** |
+|----------|----------|-----------------|
+| 📊 System Overview | [`SYSTEM_MAP.md`](SYSTEM_MAP.md) | Complete architecture diagram |
+| 🚀 Module 1 — Serving & Containers | [`Module_1_ML_Systems_Intro/`](Module_1_ML_Systems_Intro/) | FastAPI, Docker |
+| 📈 Module 2 — Reproducibility | [`Module_2_Reproducibility/`](Module_2_Reproducibility/) | DVC, MLflow, W&B |
+| 🗄️ Module 3 — Data Engineering | [`Module_3_Data_Engineering/`](Module_3_Data_Engineering/) | Pipelines, Feast, Prefect, Spark |
+| ⚡ Module 4 — Optimization | [`Module_4_Model_Optimization_and_Serving/`](Module_4_Model_Optimization_and_Serving/) | Pruning, Quantization, KD, ONNX, TorchScript, LibTorch, gRPC |
+| ☁️ Module 5 — Production | [`Module_5_Production_Engineering/`](Module_5_Production_Engineering/) | Kubernetes, Cloud (AWS/EKS) |
+
+---
+
+## Key Technologies Covered
+
+| **Category** | **Technologies** |
+|--------------|------------------|
+| **Serving** | FastAPI, gRPC, TorchScript, LibTorch |
+| **Containerization** | Docker, Docker Compose |
+| **Orchestration** | Kubernetes, Prefect |
+| **Cloud** | AWS, EKS |
+| **Versioning** | Git, DVC |
+| **Experiment Tracking** | MLflow, Weights & Biases |
+| **Feature Engineering** | Feast |
+| **Data Processing** | Spark, Pandas |
+| **Model Optimization** | Pruning, Quantization, Knowledge Distillation, ONNX |
+| **Deployment Strategies** | Rolling, Canary, Blue-Green, Shadow |
 
 ---
 
@@ -269,5 +356,11 @@ This repo is the written half of the course.
 The video lecture series is the visual, live demonstration half.
 Neither is complete without the other.
 
-When the video moves fast: slow down here.
-When a guide feels abstract: watch the demo.
+> **When the video moves fast:** slow down here.
+> **When a guide feels abstract:** watch the demo.
+
+---
+
+## License
+
+This project is for educational purposes. All content is provided as a companion resource to the video lecture series.
