@@ -115,67 +115,102 @@ Keep it open across all lectures. Every lesson adds one layer.
   [Lesson 3.3]  Spark        Scales the data pipeline beyond one machine.
                              Partition → distribute → aggregate.
 
-  ── DEPLOYMENT LAYER (Lesson 5.1) ───────────────────────────────────────────
+  ── DEPLOYMENT LAYER (Module 5) ────────────────────────────────────────────
 
-  Kubernetes (Kind → EKS/GKE/AKS)
   ┌──────────────────────────────────────────────────────────────────────┐
-  │                           Kubernetes Cluster                          │
+  │                                                                      │
+  │  Lesson 5.1 — Kubernetes (Kind → EKS/GKE/AKS)                       │
+  │                                                                      │
   │  ┌────────────────────────────────────────────────────────────────┐  │
-  │  │                      Control Plane                             │  │
-  │  │  API Server  │  etcd  │  Scheduler  │  Controller Manager      │  │
-  │  └───────────────┬────────────────────────────────────────────────┘  │
-  │                  │                                                    │
-  │  ┌───────────────┴────────────────────────────────────────────────┐  │
-  │  │                         Worker Nodes                            │  │
-  │  │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐  │  │
-  │  │  │ Node 1          │    │ Node 2          │    │ Node 3      │  │  │
-  │  │  │ ┌─────────────┐ │    │ ┌─────────────┐ │    │ ┌─────────┐ │  │  │
-  │  │  │ │ Pod: Model  │ │    │ │ Pod: Model  │ │    │ │ Pod:    │ │  │  │
-  │  │  │ │ replica 1   │ │    │ │ replica 2   │ │    │ │ Model   │ │  │  │
-  │  │  │ └─────────────┘ │    │ └─────────────┘ │    │ │ replica3│ │  │  │
-  │  │  │ ┌─────────────┐ │    │ ┌─────────────┐ │    │ └─────────┘ │  │  │
-  │  │  │ │ Service     │ │    │ │ kube-proxy  │ │    │             │  │  │
-  │  │  │ │ (load balancer)  │    │ └─────────────┘ │    │             │  │  │
-  │  │  └─────────────┘ │    └─────────────────┘    └─────────────┘  │  │
-  │  └─────────────────────────────────────────────────────────────────┘  │
+  │  │                     Kubernetes Cluster                          │  │
+  │  │  ┌──────────────────────────────────────────────────────────┐  │  │
+  │  │  │                    Control Plane                         │  │  │
+  │  │  │  API Server  │  etcd  │  Scheduler  │  Controller Mgr   │  │  │
+  │  │  └──────────────────────────────────────────────────────────┘  │  │
+  │  │                              │                                   │  │
+  │  │  ┌──────────────────────────────────────────────────────────┐  │  │
+  │  │  │                    Worker Nodes                          │  │  │
+  │  │  │  ┌───────────────┐  ┌───────────────┐  ┌────────────┐  │  │  │
+  │  │  │  │ Node 1        │  │ Node 2        │  │ Node 3     │  │  │  │
+  │  │  │  │ ┌───────────┐ │  │ ┌───────────┐ │  │ ┌────────┐ │  │  │  │
+  │  │  │  │ │ Pod:Model │ │  │ │ Pod:Model │ │  │ │ Pod:   │ │  │  │  │
+  │  │  │  │ │ replica 1 │ │  │ │ replica 2 │ │  │ │ Model  │ │  │  │  │
+  │  │  │  │ └───────────┘ │  │ └───────────┘ │  │ │replica3│ │  │  │  │
+  │  │  │  │ ┌───────────┐ │  │ ┌───────────┐ │  │ └────────┘ │  │  │  │
+  │  │  │  │ │ Service   │ │  │ │ kube-proxy│ │  │            │  │  │  │
+  │  │  │  │ │ (LB)      │ │  │ └───────────┘ │  │            │  │  │  │
+  │  │  │  │ └───────────┘ │  └───────────────┘  └────────────┘  │  │  │
+  │  │  │  └───────────────┘                                      │  │  │
+  │  │  └──────────────────────────────────────────────────────────┘  │  │
+  │  └────────────────────────────────────────────────────────────────┘  │
+  │                                                                      │
+  │  Core Abstractions (Lesson 5.1)                                      │
+  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌────────────┐ │
+  │  │    Pod      │  │ Deployment  │  │  Service    │  │ Namespace  │ │
+  │  │ 1+ container│  │  replica    │  │ stable IP   │  │ logical    │ │
+  │  │ shared net  │  │  management │  │ + DNS + LB  │  │ isolation  │ │
+  │  └─────────────┘  └─────────────┘  └─────────────┘  └────────────┘ │
+  │                                                                      │
+  │  ── CLOUD INFRASTRUCTURE (Lesson 5.2) ──────────────────────────────│
+  │                                                                      │
+  │  ┌────────────────────────────────────────────────────────────────┐  │
+  │  │                      AWS Cloud                                 │  │
+  │  │  ┌──────────────────────────────────────────────────────────┐  │  │
+  │  │  │  IAM          │  VPC          │  EC2        │  S3        │  │  │
+  │  │  │  (Auth)       │  (Network)    │  (Compute)  │  (Storage)  │  │  │
+  │  │  └──────────────────────────────────────────────────────────┘  │  │
+  │  │  ┌──────────────────────────────────────────────────────────┐  │  │
+  │  │  │  EKS (Elastic Kubernetes Service)                         │  │  │
+  │  │  │  • Managed control plane                                  │  │  │
+  │  │  │  • Worker node groups (EC2)                               │  │  │
+  │  │  │  • ECR for container images                               │  │  │
+  │  │  │  • Load Balancer for service exposure                     │  │  │
+  │  │  └──────────────────────────────────────────────────────────┘  │  │
+  │  └────────────────────────────────────────────────────────────────┘  │
   └──────────────────────────────────────────────────────────────────────┘
 
-  Core Abstractions (from Lesson 5.1)
-  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-  │    Pod      │  │ Deployment  │  │  Service    │  │  Namespace  │
-  │ 1+ container│  │  replica    │  │ stable IP   │  │  logical    │
-  │ shared net  │  │  management │  │ + DNS + LB  │  │  isolation  │
-  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘
+  ── OBSERVABILITY LAYER (Module 6) ────────────────────────────────────────
 
-  Deployment Strategies (implemented in Kubernetes)
-  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-  │   Rolling   │  │   Canary    │  │ Blue-Green  │  │   Shadow    │
-  │  Gradual    │  │  Small %    │  │  Two live   │  │  No traffic │
-  │  replace    │  │  of traffic │  │  envs, flip │  │  on new ver │
-  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │                      OBSERVABILITY STACK                                 │
+  │                                                                         │
+  │  ┌──────────────────────────────────────────────────────────────────┐   │
+  │  │  EVIDENTLY (Lesson 6.1)                                          │   │
+  │  │  • Data drift detection (statistical tests)                      │   │
+  │  │  • Data quality reports (summary statistics, missing values)     │   │
+  │  │  • Interactive HTML reports with visualizations                  │   │
+  │  │  • Trigger: on-demand or scheduled                               │   │
+  │  └──────────────────────────────────────────────────────────────────┘   │
+  │                                                                         │
+  │  ┌──────────────────────────────────────────────────────────────────┐   │
+  │  │  PROMETHEUS + GRAFANA (Lesson 6.2)                              │   │
+  │  │  • Metrics export: latency, request count, error rates           │   │
+  │  │  • System metrics: CPU usage, memory usage                      │   │
+  │  │  • Time-series DB: Prometheus scrapes every 15s                 │   │
+  │  │  • Dashboards: Grafana visualizes trends and anomalies          │   │
+  │  │  • Alerts: configured on threshold breaches                     │   │
+  │  └──────────────────────────────────────────────────────────────────┘   │
+  │                                                                         │
+  │  ┌──────────────────────────────────────────────────────────────────┐   │
+  │  │  INTEGRATION PATTERN                                             │   │
+  │  │  • request_log.csv stores all predictions                        │   │
+  │  │  • Evidently analyzes historical logs for drift                  │   │
+  │  │  • Prometheus scrapes /metrics endpoint                         │   │
+  │  │  • Grafana shows combined view: metrics + drift                 │   │
+  │  └──────────────────────────────────────────────────────────────────┘   │
+  └─────────────────────────────────────────────────────────────────────────┘
 
-  ── OBSERVABILITY LAYER (Lesson 5.2 — coming) ───────────────────────────────
+  Drift Detection Flow:
+  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+  │   /predict   │───▶│ request_log  │───▶│   Evidently  │───▶│   Alert if   │
+  │   requests   │    │   .csv       │    │   Report     │    │   drift > 30%│
+  └──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
 
-  Infrastructure metrics   Latency, throughput, CPU/memory, error rate.
-  (Prometheus + Grafana)   Alerts when the system is unhealthy.
-
-  Data drift detection     Input distribution shifts from training distribution.
-  (Evidently / Whylogs)    Triggers retraining before accuracy visibly drops.
-
-  Model performance        Prediction quality over time (where labels exist).
-                           Catches concept drift.
-
-  ── CI/CD LAYER (Lesson 5.3 — coming) ───────────────────────────────────────
-
-  CI pipeline              On every push: run tests, validate data schema,
-  (GitHub Actions)         train a shadow model, compare metrics to baseline.
-
-  CD pipeline              On merge to main: build container image,
-  (ArgoCD / GitOps)        push to registry, deploy to staging, promote.
-
-  Model validation gate    Automated check: new model must beat current
-                           production model on a held-out eval set.
-                           If not, deployment is blocked.
+  Metrics Flow:
+  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+  │   /metrics   │───▶│  Prometheus  │───▶│   Grafana    │───▶│  Dashboard   │
+  │   endpoint   │    │  (scrape)    │    │  (query)     │    │  (visualize) │
+  └──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
 ```
 
 ---
@@ -195,8 +230,9 @@ Keep it open across all lectures. Every lesson adds one layer.
 | 4.1 | Compression: pruning + quantization + distillation + ONNX | Optimization Layer | ✓ |
 | 4.2 | Serving transport: TorchScript + LibTorch + gRPC | Serving Transport Layer | ✓ |
 | 5.1 | Kubernetes: pods, deployments, services, rolling updates, self-healing, auto-scaling | Deployment Layer | ✓ |
-| 5.2 | Data drift + model drift + infrastructure observability | Observability Layer | Coming |
-| 5.3 | CI/CD pipeline + model validation gate + GitOps | CI/CD Layer | Coming |
+| 5.2 | Cloud infrastructure: AWS (EC2, S3, ECR, VPC, IAM, EKS) | Deployment Layer | ✓ |
+| 6.1 | Data drift detection with Evidently (statistical tests, quality reports) | Observability Layer | ✓ |
+| 6.2 | Production metrics: Prometheus + Grafana (latency, throughput, system metrics, dashboards) | Observability Layer | ✓ |
 
 ---
 
@@ -244,6 +280,7 @@ are all scalability failures at different layers of the system.
 | Compress models for deployment targets | Compression — Lesson 4.1 |
 | Containerize for hardware-agnostic deployment | Docker — Lesson 1.2 |
 | Scale the serving layer across many nodes with orchestration | Kubernetes — Lesson 5.1 |
+| Deploy to cloud infrastructure with managed services | AWS — Lesson 5.2 |
 
 ### Problem 4 — Observability
 *"The model was working. Now it isn't. We have no idea when it broke or why."*
@@ -254,9 +291,10 @@ Without observability, you find out when a customer complains — not before.
 
 | Solution | Lesson |
 |---------|--------|
-| Detect input distribution shift before accuracy drops | Evidently / Whylogs — Lesson 5.2 |
-| Track model performance over time with live labels | Model monitoring — Lesson 5.2 |
-| Infrastructure health: latency, errors, resource use | Prometheus + Grafana — Lesson 5.2 |
+| Detect input distribution shift before accuracy drops | Evidently — Lesson 6.1 |
+| Track system health: latency, errors, resource use | Prometheus + Grafana — Lesson 6.2 |
+| Track model performance over time with live labels | Model monitoring — Lesson 5.2 (coming) |
+| Alert on drift or performance degradation | Alerting rules — Lessons 6.2, 5.2 |
 
 ### Problem 5 — Automation
 *"Every deployment is manual. One human error ships a broken model."*
@@ -267,9 +305,10 @@ the gatekeeper, not the engineer.
 
 | Solution | Lesson |
 |---------|--------|
-| Automatically test code and validate data on every commit | CI pipeline — Lesson 5.3 |
-| Block deployments where the new model underperforms the old | Model validation gate — Lesson 5.3 |
-| Deploy automatically when all gates pass | CD pipeline / GitOps — Lesson 5.3 |
+| Automatically test code and validate data on every commit | CI pipeline — Coming |
+| Block deployments where the new model underperforms the old | Model validation gate — Coming |
+| Deploy automatically when all gates pass | CD pipeline / GitOps — Coming |
+| Trigger retraining when drift is detected | Auto-retrain — Lessons 6.1 + Coming |
 
 ---
 
@@ -300,9 +339,56 @@ the gatekeeper, not the engineer.
 
 ---
 
+## What AWS (Lesson 5.2) Adds Specifically
+
+**Before AWS (Lesson 5.1):**
+- Local Kubernetes cluster (Kind/minikube)
+- Limited to development machine resources
+- No managed services
+- Manual infrastructure management
+
+**After AWS (Lesson 5.2):**
+- Managed EKS control plane (no etcd/API server management)
+- Worker node groups (auto-scaling EC2 instances)
+- ECR for container image registry
+- VPC for network isolation and security
+- IAM for fine-grained access control
+- S3 for model and data storage
+- Load Balancer integration for service exposure
+
+**The Demo in Lesson 5.2 (Coming):**
+- Set up AWS CLI and IAM roles
+- Create EKS cluster using `eksctl`
+- Deploy the prediction app to EKS
+- Configure Auto Scaling Groups
+- Set up Load Balancer for public access
+- Monitor with CloudWatch
+
+---
+
+## What Observability (Module 6) Adds Specifically
+
+**Before Observability (Module 5):**
+- Model deployed but no visibility into its behavior
+- No detection of data drift (distribution changes)
+- No system metrics (latency, throughput, resource usage)
+- React to issues only after users complain
+
+**After Observability (Module 6):**
+- Evidently detects data drift before accuracy drops
+- Prometheus collects real-time metrics from the application
+- Grafana dashboards show trends and anomalies
+- Alerts trigger on threshold breaches
+
+**The Demos in Module 6:**
+- **Evidently (Lesson 6.1):** Generate reference data, simulate drift, run reports
+- **Prometheus + Grafana (Lesson 6.2):** FastAPI app with metrics, load testing, Kubernetes deployment
+
+---
+
 ## Data Flow Through the System
 
-The three arrows that connect the entire system:
+The four arrows that connect the entire system:
 
 ```
 1. Training data flow
@@ -313,12 +399,18 @@ The three arrows that connect the entire system:
    Live request → Feature Store (online) → Model → Prediction
    Result: prediction returned to caller in <100ms
 
-3. Update flow
+3. Observability flow
+   Predictions → request_log.csv → Evidently (drift detection)
+   Metrics → /metrics endpoint → Prometheus → Grafana dashboard
+   Result: health status + alerts
+
+4. Update flow
    New raw data → re-run pipeline → new features → retrain
    → new experiment → promote to production → serving picks it up
+   → monitoring confirms health
 ```
 
-These three flows define the "data flywheel" of a production ML system.
+These four flows define the "data flywheel" of a production ML system.
 The system improves continuously because each flow feeds the next.
 
 ---
@@ -327,9 +419,13 @@ The system improves continuously because each flow feeds the next.
 
 ```
                         ┌────────────────┐
-                        │  Lessons 5.1–3 │ Production Engineering
-                        │   (K8s, Mon,   │
-                        │    CI/CD)      │
+                        │  Module 6      │ Observability & Monitoring
+                        │  (Lessons 6.1–2)│ Evidently + Prometheus/Grafana
+                        └──────┬─────────┘
+                               │
+                        ┌──────┴─────────┐
+                        │  Module 5      │ Cloud and Infrastructure
+                        │  (Lessons 5.1–2)│ Kubernetes + AWS (EKS)
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
@@ -406,6 +502,8 @@ a human mistake from shipping a broken model?"
 | **Worker node** | Kubernetes muscle: kubelet, kube-proxy, container runtime |
 | **kubectl** | Command-line interface for interacting with Kubernetes clusters |
 | **Kind** | Kubernetes in Docker — runs a local cluster for development |
+| **Minikube** | Local Kubernetes cluster for development and testing |
+| **EKS** | Elastic Kubernetes Service — AWS managed Kubernetes |
 | **Rolling deployment** | Replace old pods one at a time — zero downtime, but mixed versions coexist briefly |
 | **Canary deployment** | Route a small % of traffic to the new version; watch metrics before full rollout |
 | **Blue-green deployment** | Run two identical environments; flip all traffic at once; easy rollback |
@@ -414,14 +512,29 @@ a human mistake from shipping a broken model?"
 | **Concept drift** | The relationship between inputs and the target label changes over time |
 | **Model monitoring** | Tracking prediction quality (accuracy, distribution) in production over time |
 | **Infrastructure observability** | Tracking latency, throughput, error rate, CPU/memory of deployed services |
-| **CI (Continuous Integration)** | Automatically build, test, and validate every code change |
-| **CD (Continuous Delivery/Deployment)** | Automatically deliver a validated build to production |
-| **Model validation gate** | Automated check that blocks a new model from deploying if it underperforms the current one |
-| **GitOps** | Git is the single source of truth for both infrastructure and application state |
+| **Evidently** | Open-source library for data drift detection and model monitoring |
+| **Prometheus** | Time-series database for metrics collection with a pull-based model |
+| **Grafana** | Visualization and dashboarding tool that queries Prometheus data |
+| **Counter** | Prometheus metric that only increases (request count, errors) |
+| **Histogram** | Prometheus metric that buckets values (latency distribution) |
+| **Gauge** | Prometheus metric that represents a current value (CPU usage) |
+| **EC2** | Elastic Compute Cloud — AWS virtual machines |
+| **S3** | Simple Storage Service — AWS object storage |
+| **ECR** | Elastic Container Registry — AWS container image registry |
+| **VPC** | Virtual Private Cloud — AWS network isolation |
+| **IAM** | Identity and Access Management — AWS authentication and authorization |
+| **EKS** | Elastic Kubernetes Service — AWS managed Kubernetes |
+| **eksctl** | CLI tool for creating and managing EKS clusters |
+| **CloudWatch** | AWS monitoring and observability service |
+| **Load Balancer** | Distributes traffic across multiple targets (EC2, pods) |
+| **Auto Scaling** | Automatically adjusts capacity based on demand |
+| **Node group** | A set of EC2 instances in EKS that share configuration |
 
 ---
 
-## Lesson 5.1 Files Reference
+## Lesson 5.1-2 Files Reference
+
+### Lesson 5.1 — Kubernetes
 
 | File | Purpose |
 |------|---------|
@@ -434,4 +547,41 @@ a human mistake from shipping a broken model?"
 | `kind-config.yaml` | Optional Kind cluster configuration |
 | `K8s.md` | Deep-dive learning guide for Kubernetes concepts |
 | `README.md` | Step-by-step commands, experiments, and troubleshooting |
-```
+
+### Lesson 5.2 — Cloud and AWS
+
+| File | Purpose |
+|------|---------|
+| `1-Cloud_Fundemetals.html` | Cloud computing fundamentals (IaaS, PaaS, SaaS, etc.) |
+| `2-aws-intro.html` | AWS introduction: core services and architecture |
+| `3-EKS.html` | EKS deep dive: cluster setup, node groups, deployments |
+
+### Module 6 — Observability and Monitoring
+
+#### Lesson 6.1 — Evidently
+
+| File | Purpose |
+|------|---------|
+| `README.md` | Lesson guide: concepts, patterns, and quick reference |
+| `evidently-demo.ipynb` | Full Jupyter notebook: data generation, drift detection, data quality reports |
+| `drift_report.html` | Sample drift report with statistical test results and visualizations |
+| `data_summary.html` | Sample data quality report with distribution summaries |
+
+#### Lesson 6.2 — Prometheus & Grafana
+
+| File | Purpose |
+|------|---------|
+| `README.md` | Lesson guide: concepts, architecture, and quick reference |
+| `app.py` | FastAPI application with Prometheus metrics, request logging, drift endpoint |
+| `test_1.py` | Sequential load test: 100 requests, batch processing, drift report |
+| `test_2.py` | Concurrent load test: 5000 requests with 20 parallel workers |
+| `generate_reference_data.py` | Generate reference (training) data for drift detection |
+| `generate_dashboard.py` | Script to generate/update Grafana dashboard configuration |
+| `prometheus-config.yaml` | Prometheus configuration with scrape targets and retention |
+| `prometheus-deployment.yaml` | Kubernetes deployment for Prometheus |
+| `grafana-deployment.yaml` | Kubernetes deployment for Grafana |
+| `dashboard.json` | Grafana dashboard JSON (latency, requests, system metrics, drift) |
+| `request_log.csv` | Persistent request log for drift detection |
+| `reference.csv` | Reference data for drift detection |
+| `app.log` | Application logs |
+| `drift_report.html` | Generated drift report |

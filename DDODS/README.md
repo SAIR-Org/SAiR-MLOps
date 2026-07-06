@@ -65,18 +65,16 @@ Each module guide is structured as a lecture companion — the concepts, diagram
                      ▼
 ┌─────────────────────────────────────────────────────────────┐
 │              PRODUCTION DEPLOYMENT                         │
-│              (Lesson 5.1)                                  │
+│              (Lesson 5.1-2)                                │
 │   Kubernetes + AWS (EKS)                                  │
 └────────────────────┬──────────────────────────────────────┘
                      ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              MONITORING + CI/CD                            │
-│              (Lessons 5.2-3) [coming]                      │
-│   Observability → Drift Detection → Auto-retrain          │
+│              OBSERVABILITY + MONITORING                    │
+│              (Lesson 6.1-2)                                │
+│   Evidently → Data Drift Detection                        │
+│   Prometheus + Grafana → Metrics & Dashboards             │
 └─────────────────────────────────────────────────────────────┘
-
-         Everything runs in Docker (Lesson 1.2)
-         Orchestrated by Prefect + Spark (Lesson 3.3)
 ```
 
 > 📍 **Full system diagram:** See [`SYSTEM_MAP.md`](SYSTEM_MAP.md)
@@ -127,16 +125,24 @@ MODULE 4 — Model Optimization & Serving
   Lesson 4.2   Coupled to Python. Can't reach C++.
                ↳ TorchScript, LibTorch, gRPC.
 
-MODULE 5 — Production Engineering
+MODULE 5 — Cloud and Infrastructure
 ────────────────────────────────────────────────────────────
   Lesson 5.1   A single container is not production.
-               ↳ Kubernetes, AWS (EKS), deployment strategies.
+               ↳ Kubernetes: pods, deployments, services.
 
-  Lesson 5.2   How do you know it still works?      [coming]
-               ↳ Model drift, monitoring, alerting.
+  Lesson 5.2   Production requires cloud infrastructure.
+               ↳ AWS (EC2, S3, ECR, VPC, IAM, EKS).
 
-  Lesson 5.3   Every step above is manual.          [coming]
-               ↳ CI/CD for ML: automated gates, GitOps.
+MODULE 6 — Observability and Monitoring
+────────────────────────────────────────────────────────────
+  Foundations  Understand why models degrade and how to detect it.
+               ↳ [Core Concepts](Module_6_Observability_and_Monitoring/FOUNDATIONS.md)
+
+  Lesson 6.1   Data drift goes undetected without monitoring.
+               ↳ Evidently: statistical drift detection.
+
+  Lesson 6.2   Production metrics need a scalable stack.
+               ↳ Prometheus + Grafana: time-series, dashboards.
 ```
 
 ---
@@ -187,14 +193,22 @@ MODULE 5 — Production Engineering
 | 4.1 | [Compression](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/) | [Overview](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/COMPRESSION_OVERVIEW.md) · [Pruning](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/pruning/PRUNING_GUIDE.md) · [Quantization](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/Quantization/QNT_GUIDE.md) · [KD](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/KD/KD_GUIDE.md) · [ONNX](Module_4_Model_Optimization_and_Serving/Lesson_1_Compression/onnx/ONNX_GUIDE.md) | ✓ |
 | 4.2 | [Serving](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/) | [TorchScript](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/TorchScript/TORCHSCRIPT_GUIDE.md) · [LibTorch](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/LibTorch/LIBTORCH_GUIDE.md) · [gRPC](Module_4_Model_Optimization_and_Serving/Lesson_2_Serving/API_gRPC/GRPC_GUIDE.md) | ✓ |
 
-### Module 5 — Production Engineering
+### Module 5 — Cloud and Infrastructure
 *A deployed model is a system. Systems require infrastructure.*
 
 | Lesson | Topic | Guide | Status |
 |--------|-------|-------|--------|
-| 5.1 | [Kubernetes & Cloud](Module_5_Production_Engineering/Lesson_1_K8s/) | [K8s.md](Module_5_Production_Engineering/Lesson_1_K8s/K8s.md) · [Cloud](Module_5_Production_Engineering/Lesson_2_Cloud_and_AWS/) | ✓ |
-| 5.2 | Monitoring + Observability | — | 🚧 |
-| 5.3 | CI/CD for ML | — | 📝 |
+| 5.1 | [Kubernetes](Module_5_Cloud_and_Infra/Lesson_1_K8s/) | [K8s.md](Module_5_Cloud_and_Infra/Lesson_1_K8s/K8s.md) · [README.md](Module_5_Cloud_and_Infra/Lesson_1_K8s/README.md) | ✓ |
+| 5.2 | [Cloud & AWS](Module_5_Cloud_and_Infra/Lesson_2_Cloud_and_AWS/) | [Cloud Fundamentals](Module_5_Cloud_and_Infra/Lesson_2_Cloud_and_AWS/1-Cloud_Fundemetals.html) · [AWS Intro](Module_5_Cloud_and_Infra/Lesson_2_Cloud_and_AWS/2-aws-intro.html) · [EKS](Module_5_Cloud_and_Infra/Lesson_2_Cloud_and_AWS/3-EKS.html) | ✓ |
+
+### Module 6 — Observability and Monitoring
+*A model in production is a living system — it needs vital signs.*
+
+| Lesson | Topic | Guide | Status |
+|--------|-------|-------|--------|
+| Foundations | [Core Concepts](Module_6_Observability_and_Monitoring/FOUNDATIONS.md) | Taxonomy of failures, drift detection, logging principles | ✓ |
+| 6.1 | [Evidently](Module_6_Observability_and_Monitoring/Evidently/) | [README.md](Module_6_Observability_and_Monitoring/Evidently/README.md) · [evidently-demo.ipynb](Module_6_Observability_and_Monitoring/Evidently/evidently-demo.ipynb) | ✓ |
+| 6.2 | [Prometheus & Grafana](Module_6_Observability_and_Monitoring/prometheus_and_Grafana/) | [README.md](Module_6_Observability_and_Monitoring/prometheus_and_Grafana/README.md) · [app.py](Module_6_Observability_and_Monitoring/prometheus_and_Grafana/app.py) · [dashboard.json](Module_6_Observability_and_Monitoring/prometheus_and_Grafana/dashboard.json) | ✓ |
 
 ---
 
@@ -238,6 +252,10 @@ W&B account (free at wandb.ai)
 kubectl
 kind or minikube
 awscli (for AWS deployment)
+
+# Module 6
+Prometheus (for metrics collection)
+Grafana (for visualization)
 ```
 
 ---
@@ -251,7 +269,8 @@ awscli (for AWS deployment)
 | 📈 Module 2 — Reproducibility | [`Module_2_Reproducibility/`](Module_2_Reproducibility/) |
 | 🗄️ Module 3 — Data Engineering | [`Module_3_Data_Engineering/`](Module_3_Data_Engineering/) |
 | ⚡ Module 4 — Optimization | [`Module_4_Model_Optimization_and_Serving/`](Module_4_Model_Optimization_and_Serving/) |
-| ☁️ Module 5 — Production | [`Module_5_Production_Engineering/`](Module_5_Production_Engineering/) |
+| ☁️ Module 5 — Cloud & Infrastructure | [`Module_5_Cloud_and_Infra/`](Module_5_Cloud_and_Infra/) |
+| 📡 Module 6 — Observability | [`Module_6_Observability_and_Monitoring/`](Module_6_Observability_and_Monitoring/) |
 
 ---
 
@@ -264,6 +283,7 @@ awscli (for AWS deployment)
 | 3 | Feast, Prefect, Spark, Pandas |
 | 4 | Pruning, Quantization, KD, ONNX, TorchScript, LibTorch, gRPC |
 | 5 | Kubernetes, AWS (EC2, S3, ECR, VPC, IAM, EKS) |
+| 6 | Evidently, Prometheus, Grafana |
 
 ---
 

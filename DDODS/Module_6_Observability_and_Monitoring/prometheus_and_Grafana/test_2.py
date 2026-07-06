@@ -41,3 +41,4 @@ elapsed_time = time.time() - start_time
 print(
     f"\nFinished! Sent {total_requests} requests in {elapsed_time:.2f} seconds")
 print(f"Rate: {total_requests/elapsed_time:.2f} requests/second")
+
