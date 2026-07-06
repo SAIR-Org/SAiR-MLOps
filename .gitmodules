@@ -1,0 +1,3 @@
+[submodule "DDODS"]
+	path = DDODS
+	url = git@github.com:MaaS-YT/MLOps-from-the-first-principles.git
