@@ -1,3 +1,6 @@
 [submodule "DDODS"]
 	path = DDODS
 	url = git@github.com:MaaS-YT/MLOps-from-the-first-principles.git
+[submodule "SAiRCAMP"]
+	path = SAiRCAMP
+	url = git@github.com:SAIR-Org/SAiRCAMP_1.git
