@@ -50,7 +50,7 @@ Most MLOps resources respond to this by teaching **tool syntax in isolation**: a
 This module runs on two resources at once — not alternatives, two lenses on the same subject. One builds the **mental model**, the other builds the **muscle memory**.
 
 ```
-📖 MLOps from First Principles                    🏗️ SAIRCAMP (Live Cohort)
+📖 DDODS (MLOps from First Principles)          🏗️ SAIRCAMP (Live Cohort)
 ────────────────────────────────                  ────────────────────────────────
 Solo-recorded YouTube playlist                     Live sessions, built with the cohort
 Concept-first, broad coverage                      Project-first, production depth
@@ -78,25 +78,23 @@ tied to the failure mode it solves                 module by module, week by wee
                 └─────────────────────────────────┘
 ```
 
-| Track | Format | Philosophy | Answers |
-|---|---|---|---|
-| 📖 MLOps from First Principles | YouTube playlist + repo | Foundation first, tool second | *"Why does this exist?"* |
-| 🏗️ SAIRCAMP | Live cohort, built in real time | Implementation heavy, one system, tool-first | *"How do I build it?"* |
+| Track | Format | Philosophy | Repo | Status |
+|---|---|---|---|---|
+| 📖 DDODS — MLOps from First Principles | YouTube + standalone repo | Foundation first, tool second | [github.com/MaaS-YT/MLOps-from-the-first-principles](https://github.com/MaaS-YT/MLOps-from-the-first-principles) | ✅ Available |
+| 🏗️ SAIRCAMP MLOps | Live cohort, standalone repo | Implementation heavy, one system, tool-first | [github.com/SAIR-Org/SAiRCAMP_1](https://github.com/SAIR-Org/SAiRCAMP_1) | ✅ Available |
+
+> 📌 **Note:** `DDODS/` and `SAiRCAMP/` are **Git submodules** in this repo. They appear as folders here but link to their standalone repositories. Click the links above to visit them directly, or browse them locally in their respective folders.
 
 **Take both.** Watch the theory around the same time you hit the matching build session — the video gives you the mental model before you're in the weeds wiring Docker networks together. They don't run on a synced week-by-week schedule; use *First Principles* as a standing reference throughout the whole module.
 
 ---
 
-## 🗺️ **Quick Navigation**
+## 🗺️ **Quick Navigation — Clickable Links**
 
-| Resource | Format | Where | Status |
+| Resource | Format | Standalone Repo | Local Path |
 |---|---|---|---|
-| 📖 MLOps from First Principles | YouTube + repo | [YouTube](https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu) · [Repo](https://github.com/SAIR-Org/MLOps-from-First-Principles) | ✅ Available |
-| 🏗️ SAIRCAMP — Project 1: Classical ML | Live cohort, released week by week | Repo 🔒 not public yet | ✅ Built |
-| 🧠 SAIRCAMP — Project 2: Deep Learning | Live cohort, revealed lecture by lecture | Repo 🔜 TBA | ✅ Built |
-| 📄 SAIRCAMP — Project 3: Document Intelligence | Live cohort, scope TBA | Repo 🔜 Coming | 📝 Planned |
-
-> This repo (`SAiR-MLOps-Blueprint`) is the hub — it maps the whole module and links out to every resource. It is **not** where the code lives; each SAIRCAMP project ships in its own repo, linked here as it's released.
+| 📖 DDODS — MLOps from First Principles | YouTube + standalone repo | [github.com/MaaS-YT/MLOps-from-the-first-principles](https://github.com/MaaS-YT/MLOps-from-the-first-principles) | [`./DDODS/`](./DDODS/) |
+| 🏗️ SAIRCAMP MLOps | Live cohort, standalone repo | [github.com/SAIR-Org/SAiRCAMP_1](https://github.com/SAIR-Org/SAiRCAMP_1) | [`./SAiRCAMP/`](./SAiRCAMP/) |
 
 ---
 
@@ -121,14 +119,14 @@ SAIRCAMP is a track of complete, real, end-to-end builds — each one a full pro
 <td align="center"><strong>1</strong><br/>🚕</td>
 <td><strong>SAIRCAMP MLOps</strong></td>
 <td>NYC Taxi trip duration prediction — classical ML, tabular data, 8 modules from notebook to secured production system</td>
-<td align="center">✅ Built<br/><sub>released week by week</sub></td>
-<td align="center">🔒 not public yet</td>
+<td align="center">✅ Built</td>
+<td align="center"><a href="https://github.com/SAIR-Org/SAiRCAMP_1">🔗 Link</a></td>
 </tr>
 <tr>
 <td align="center"><strong>2</strong><br/>🧠</td>
 <td><strong>SAIRCAMP DL</strong></td>
 <td>Deep learning system — full scope TBA</td>
-<td align="center">✅ Built<br/><sub>revealed lecture by lecture</sub></td>
+<td align="center">✅ Built</td>
 <td align="center">🔜 to be announced</td>
 </tr>
 <tr>
@@ -293,12 +291,12 @@ We're not going to hand you invented statistics about job placement — this tra
 <a href="https://t.me/sair19969">Telegram: t.me/sair19969</a>
 </td>
 <td width="33%" align="center">
-<h4><code>🎥</code> 2️⃣ Start the Theory Track</h4>
-<a href="https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu">MLOps from First Principles</a>
+<h4><code>📖</code> 2️⃣ Start the Theory Track</h4>
+<a href="https://github.com/MaaS-YT/MLOps-from-the-first-principles">DDODS — MLOps from First Principles</a>
 </td>
 <td width="34%" align="center">
-<h4><code>🏗️</code> 3️⃣ Follow the Live Builds</h4>
-SAIRCAMP repos linked above,<br/>unlocked as each project releases
+<h4><code>🏗️</code> 3️⃣ Build the System</h4>
+<a href="https://github.com/SAIR-Org/SAiRCAMP_1">SAIRCAMP MLOps — End to End</a>
 </td>
 </tr>
 </table>
@@ -306,11 +304,19 @@ SAIRCAMP repos linked above,<br/>unlocked as each project releases
 </div>
 
 ```bash
-# This repo is the map — clone it for the navigation and concept guides
+# Clone the hub repo (this one)
 git clone https://github.com/SAIR-Org/SAiR-MLOps-Blueprint.git
+cd SAiR-MLOps-Blueprint
 
-# Each SAIRCAMP project ships in its own repo once released, e.g.
-git clone https://github.com/SAIR-Org/<saircamp-project-repo>.git
+# Initialize and update submodules (DDODS + SAiRCAMP)
+git submodule update --init --recursive
+
+# Now you have both tracks locally:
+#   ./DDODS/     → MLOps from First Principles (theory)
+#   ./SAiRCAMP/  → SAIRCAMP MLOps (end-to-end implementation)
+
+# To update submodules to their latest versions:
+git submodule update --remote
 ```
 
 ---
@@ -321,8 +327,8 @@ git clone https://github.com/SAIR-Org/<saircamp-project-repo>.git
 Module 4 — Applied Deep Learning     ✅   github.com/SAIR-Org/SAIR_Jr
 Module 5 — GPT from Scratch          ✅   github.com/SAIR-Org/SAIR_Jr
 Module 6 — MLOps  ← you are here          github.com/SAIR-Org/SAiR-MLOps-Blueprint
-  ├── MLOps from First Principles    (theory, parallel track)
-  └── SAIRCAMP                       (live builds, parallel track)
+  ├── DDODS                         (theory, standalone repo)
+  └── SAIRCAMP                      (live builds, standalone repo)
 Capstone — Real-World Impact Project      github.com/SAIR-Org/SAIR_Jr
 ```
 
@@ -332,7 +338,7 @@ Module 6 is where everything from Modules 0-5 stops being *"a model in a noteboo
 
 <div align="center">
 
-**License:** MIT | **Status:** 🔜 Incoming
+**License:** MIT | **Status:** ✅ Available
 
 [SAIR Initiative](https://github.com/SAIR-Org) · [Telegram](https://t.me/sair19969) · [YouTube](https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu)
 
