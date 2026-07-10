@@ -4,7 +4,7 @@
 
 ![SAiR MLOps Blueprint Banner](banner.jpg)
 
-### **90% of ML Models Never Reach Production. This Module Shows You the Other 10%.**
+### **90% of ML Models Never Reach Production. This Is How You Become Someone Who Ships the Other 10%.**
 *Module 6 of the SAIR Jr. Certification Track — Sudanese Artificial Intelligence Research (SAIR) Initiative*
 
 <table>
@@ -33,74 +33,99 @@
 
 ---
 
-## 🎯 **The Problem This Module Solves**
+## 📚 Table of Contents
+
+- [🎯 The Problem With How MLOps Is Usually Taught](#-the-problem-with-how-mlops-is-usually-taught)
+- [🗺️ Quick Navigation](#️-quick-navigation)
+- [⚡ Why Two Tracks, Not One](#-why-two-tracks-not-one)
+- [🏗️ SAIRCAMP Is a Series, Not a Single System](#️-saircamp-is-a-series-not-a-single-system)
+- [🚕 A Closer Look — Project 1: SAIRCAMP MLOps](#-a-closer-look--project-1-saircamp-mlops)
+- [🛠️ Technology Stack You'll Master](#️-technology-stack-youll-master)
+- [💼 What You Walk Away Able to Do](#-what-you-walk-away-able-to-do)
+- [🎓 Module 6 Completion Requirements](#-module-6-completion-requirements)
+- [🚀 Getting Started](#-getting-started)
+- [📚 Where This Fits in SAIR Jr.](#-where-this-fits-in-sair-jr)
+
+---
+
+## 🎯 **The Problem With How MLOps Is Usually Taught**
 
 You already know how to train a model. That was never the hard part.
 
-The hard part is everything that happens after: the model that works perfectly on your laptop and silently degrades in production. The experiment you can't reproduce three weeks later. The "quick deploy" that becomes a 2am pager alert. The world shifts — a pandemic, a policy change, a new customer segment — and your model keeps confidently returning answers that are now wrong, and nothing tells you.
+The hard part is everything nobody puts in a tutorial: the model that works perfectly on your laptop and silently degrades in production. The experiment you can't reproduce three weeks later. The "quick deploy" that becomes a 2am pager alert. The world shifts — a pandemic, a policy change, a new customer segment — and your model keeps confidently returning answers that are now wrong, and nothing tells you.
 
-Most MLOps resources respond to this by teaching **tool syntax in isolation**: a 20-minute MLflow demo, a Docker "hello world," a FastAPI quickstart. You walk away able to name the tools. You still can't explain what breaks without them, and you've never felt what it's like when the ground shifts under a model you shipped.
+Most courses respond to this by teaching you **tool syntax in isolation**: here's a 20-minute MLflow demo, here's a Docker "hello world." You walk away able to name the tools. You still can't explain what breaks without them, and you've never felt what it's like when the ground shifts under a model you shipped.
 
-**This module is built backwards from that failure.** Every tool is introduced as the answer to a problem you're already stuck in. You learn MLflow because Module 1 leaves you with 20 untracked experiments and no way to know which was best. You learn Docker because your model works on your machine and fails on your teammate's.
-
----
-
-## 🔄 **Two Tracks, One System**
-
-This module runs on two resources at once — not alternatives, two lenses on the same subject. One builds the **mental model**, the other builds the **muscle memory**.
-
-```
-📖 DDODS (MLOps from First Principles)          🏗️ SAIRCAMP (Live Cohort)
-────────────────────────────────                  ────────────────────────────────
-Solo-recorded YouTube playlist                     Live sessions, built with the cohort
-Concept-first, broad coverage                      Project-first, production depth
-Every major tool, explained in isolation           Tools layered onto ONE growing system
-tied to the failure mode it solves                 module by module, week by week
-
-"Why does this exist?"                             "How do I actually build it?"
-────────────────────────────────                  ────────────────────────────────
-        │                                                    │
-        └─────────────────────┬──────────────────────────────┘
-                               ▼
-              Watch the concept → then build it live
-           (no fixed 1:1 week mapping — First Principles
-            is broader than any single SAIRCAMP project;
-              use it as reference material throughout)
-                               │
-                               ▼
-                ┌─────────────────────────────────┐
-                │   Live HTTPS Endpoint            │
-                │   https://your-domain.com        │
-                │   ├── /        Dashboard          │
-                │   ├── /api     Predictions        │
-                │   ├── /batch   Batch scoring       │
-                │   └── /mlflow  Experiment tracking │
-                └─────────────────────────────────┘
-```
-
-| Track | Format | Philosophy | Repo | Status |
-|---|---|---|---|---|
-| 📖 DDODS — MLOps from First Principles | YouTube + standalone repo | Foundation first, tool second | [github.com/MaaS-YT/MLOps-from-the-first-principles](https://github.com/MaaS-YT/MLOps-from-the-first-principles) | ✅ Available |
-| 🏗️ SAIRCAMP MLOps | Live cohort, standalone repo | Implementation heavy, one system, tool-first | [github.com/SAIR-Org/SAiRCAMP_1](https://github.com/SAIR-Org/SAiRCAMP_1) | ✅ Available |
-
-> 📌 **Note:** `DDODS/` and `SAiRCAMP/` are **Git submodules** in this repo. They appear as folders here but link to their standalone repositories. Click the links above to visit them directly, or browse them locally in their respective folders.
-
-**Take both.** Watch the theory around the same time you hit the matching build session — the video gives you the mental model before you're in the weeds wiring Docker networks together. They don't run on a synced week-by-week schedule; use *First Principles* as a standing reference throughout the whole module.
+**This module is built backwards from that failure.** You don't learn MLflow because it's Tuesday. You learn it because Module 1 leaves you with 20 untracked experiments and no way to know which one was actually best — and MLflow is the only way out of the hole you're already in.
 
 ---
 
-## 🗺️ **Quick Navigation — Clickable Links**
+## 🗺️ **Quick Navigation**
 
-| Resource | Format | Standalone Repo | Local Path |
+| Track | Format | Where | Status |
 |---|---|---|---|
-| 📖 DDODS — MLOps from First Principles | YouTube + standalone repo | [github.com/MaaS-YT/MLOps-from-the-first-principles](https://github.com/MaaS-YT/MLOps-from-the-first-principles) | [`./DDODS/`](./DDODS/) |
-| 🏗️ SAIRCAMP MLOps | Live cohort, standalone repo | [github.com/SAIR-Org/SAiRCAMP_1](https://github.com/SAIR-Org/SAiRCAMP_1) | [`./SAiRCAMP/`](./SAiRCAMP/) |
+| 📖 MLOps from First Principles | Solo-recorded playlist, concept-first | [YouTube](https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu) · [Repo](https://github.com/SAIR-Org/MLOps-from-First-Principles) | ✅ Available |
+| 🏗️ SAIRCAMP — Project 1: Classical ML | Live cohort, released week by week | Repo 🔒 not public yet | ✅ Built |
+| 🧠 SAIRCAMP — Project 2: Deep Learning | Live cohort, revealed lecture by lecture | Repo 🔜 TBA | ✅ Built |
+| 📄 SAIRCAMP — Project 3: Document Intelligence | Live cohort, scope TBA | Repo 🔜 Coming | 📝 Planned |
+
+> This repo (`SAiR-MLOps-Blueprint`) is the hub — it maps the whole module and links out to every resource. It is **not** where the code lives; each SAIRCAMP project ships in its own repo, linked here as it's released.
+
+---
+
+## ⚡ **Why Two Tracks, Not One**
+
+<div align="center">
+
+### **🔥 Concepts in Isolation Don't Survive Contact With Production**
+
+<table>
+<tr>
+<td width="100%" align="center">
+<h3>"نظرية بلا تطبيق عرجاء، وتطبيق بلا نظرية أعمى"</h3>
+<p><em>Theory without practice limps. Practice without theory is blind.</em></p>
+</td>
+</tr>
+</table>
+
+</div>
+
+**MLOps is too wide a subject for one format to teach well**, so this module runs on two resources at once — not as alternatives, but as two lenses on the same subject, mirroring the exact split that makes the whole SAIR Jr. track work:
+
+```mermaid
+flowchart LR
+    Start(["You"]) --> FP["MLOps from First Principles<br/>Solo YouTube playlist<br/>Concept-first, broad coverage<br/>Answers: why does this exist?"]
+    Start --> SC["SAIRCAMP<br/>Live cohort sessions<br/>Project-first, production depth<br/>Answers: how do I build it?"]
+
+    FP --> Merge["Watch the lecture,<br/>then build it live"]
+    SC --> Merge
+
+    Merge --> Outcome["A model that actually<br/>survives production"]
+
+    style FP fill:#e3f2fd,stroke:#1565c0,color:#000
+    style SC fill:#fff3e0,stroke:#e65100,color:#000
+    style Merge fill:#238636,color:#fff
+    style Outcome fill:#8957e5,color:#fff
+```
+
+**Recommended order:** watch the matching lecture in *First Principles* before the live build session in *SAIRCAMP* — the video gives you the mental model before you're in the weeds wiring Docker networks together.
 
 ---
 
 ## 🏗️ **SAIRCAMP Is a Series, Not a Single System**
 
-SAIRCAMP is a track of complete, real, end-to-end builds — each one a full production system on its own, each teaching MLOps against a different kind of model, released live to the cohort one at a time.
+This is the part that trips people up: **SAIRCAMP isn't one project.** It's a track of complete, real, end-to-end builds — each one a full production system on its own, each teaching MLOps against a different kind of model, released live to the cohort one at a time.
+
+```mermaid
+flowchart TD
+    Hub["SAIRCAMP Series"] --> P1["Project 1 - SAIRCAMP MLOps<br/>NYC Taxi trip duration<br/>Classical ML, tabular data<br/>8 modules, notebook to production"]
+    Hub --> P2["Project 2 - SAIRCAMP DL<br/>Deep learning system<br/>Scope TBA"]
+    Hub --> P3["Project 3 - SAIRCAMP DocIntel<br/>Document Intelligence platform<br/>Scope TBA"]
+
+    style P1 fill:#238636,color:#fff
+    style P2 fill:#238636,color:#fff
+    style P3 fill:#6e7681,color:#fff
+```
 
 <div align="center">
 
@@ -119,14 +144,14 @@ SAIRCAMP is a track of complete, real, end-to-end builds — each one a full pro
 <td align="center"><strong>1</strong><br/>🚕</td>
 <td><strong>SAIRCAMP MLOps</strong></td>
 <td>NYC Taxi trip duration prediction — classical ML, tabular data, 8 modules from notebook to secured production system</td>
-<td align="center">✅ Built</td>
-<td align="center"><a href="https://github.com/SAIR-Org/SAiRCAMP_1">🔗 Link</a></td>
+<td align="center">✅ Built<br/><sub>released week by week</sub></td>
+<td align="center">🔒 not public yet</td>
 </tr>
 <tr>
 <td align="center"><strong>2</strong><br/>🧠</td>
 <td><strong>SAIRCAMP DL</strong></td>
 <td>Deep learning system — full scope TBA</td>
-<td align="center">✅ Built</td>
+<td align="center">✅ Built<br/><sub>revealed lecture by lecture</sub></td>
 <td align="center">🔜 to be announced</td>
 </tr>
 <tr>
@@ -149,36 +174,31 @@ Each project is a **complete arc on its own** — same MLOps principles, applied
 
 ## 🚕 **A Closer Look — Project 1: SAIRCAMP MLOps**
 
-**The arc:** notebook → tracked → structured → orchestrated → served online → served offline + monitored → integrated system → real VPS → secured + auto-deploying
+```mermaid
+flowchart LR
+    A["Notebook"] --> B["Tracked"]
+    B --> C["Structured"]
+    C --> D["Orchestrated"]
+    D --> E["Served<br/>Online"]
+    E --> F["Served Offline<br/>+ Monitored"]
+    F --> G["Integrated<br/>System"]
+    G --> H["Real<br/>VPS"]
+    H --> I["Secured +<br/>Auto-Deploying"]
 
-### 8 Modules, 8 Failure Modes Eliminated
+    classDef stage fill:#238636,color:#fff,stroke:#0f4b1e
+    class A,B,C,D,E,F,G,H,I stage
+```
 
-| Module | Problem | What You Build | Tool |
+| Module | What's Built | Key Concepts | Status |
 |---|---|---|---|
-| 1 | Naive model, hidden data leakage | EDA, sklearn pipelines, a model you can trust | sklearn |
-| 2 | Untracked experiments | MLflow tracking + model registry | MLflow |
-| 3 | Unreproducible, unstructured pipelines | Clean code, retries, `@task`/`@flow` orchestration | Prefect |
-| 4 | Model that only runs in a notebook | Online serving API | FastAPI + Docker |
-| 5 | Silent degradation, no visibility | Batch scoring + drift detection dashboard | Streamlit |
-| 6 | Services that don't talk to each other | Full integrated local system | Docker Compose |
-| 7 | "Works on my machine" | Running on a real VPS | SSH, firewall, remote MLflow |
-| 8 | Insecure, manual, no auto-deploy | HTTPS + CI/CD | Nginx, Certbot, GitHub Actions |
-
-<details>
-<summary><b>📋 Full module breakdown</b></summary>
-
-| Module | What's Built | Key Concepts |
-|---|---|---|
-| 1 | Naive → broken → fixed model | EDA, data leakage, sklearn pipelines |
-| 2 | Experiment tracking + registry | MLflow runs, aliases, comparison |
-| 3 | Structured + orchestrated pipeline | Clean code, retries, Prefect `@task`/`@flow` |
-| 4 | Online serving | FastAPI, Docker, MLflow aliases |
-| 5 | Batch scoring + drift monitoring | Async API, MAE ratio, Streamlit |
-| 6 | Full integrated local system | Docker Compose, service networking |
-| 7 | Running on a real VPS | SSH, firewall, remote MLflow, SSH tunnel |
-| 8 | Production hardening | Nginx, DuckDNS, SSL/Certbot, GitHub Actions CI/CD |
-
-</details>
+| 1 | Naive → broken → fixed model | EDA, data leakage, sklearn pipelines | ✅ |
+| 2 | Experiment tracking + registry | MLflow runs, aliases, comparison | ✅ |
+| 3 | Structured + orchestrated pipeline | Clean code, retries, Prefect `@task`/`@flow` | ✅ |
+| 4 | Online serving | FastAPI, Docker, MLflow aliases | ✅ |
+| 5 | Batch scoring + drift monitoring | Async API, MAE ratio, Streamlit | ✅ |
+| 6 | Full integrated local system | Docker Compose, service networking | ✅ |
+| 7 | Running on a real VPS | SSH, firewall, remote MLflow, SSH tunnel | ✅ |
+| 8 | Production hardening | Nginx, DuckDNS, SSL/Certbot, GitHub Actions CI/CD | ✅ |
 
 ### **The Moment This Module Earns Its Keep**
 
@@ -236,8 +256,6 @@ Full module-by-module breakdown will live in that project's own README once its 
 
 </div>
 
-Each tool above is taught through the failure it solves, not as an isolated technology.
-
 ---
 
 ## 💼 **What You Walk Away Able to Do**
@@ -291,12 +309,12 @@ We're not going to hand you invented statistics about job placement — this tra
 <a href="https://t.me/sair19969">Telegram: t.me/sair19969</a>
 </td>
 <td width="33%" align="center">
-<h4><code>📖</code> 2️⃣ Start the Theory Track</h4>
-<a href="https://github.com/MaaS-YT/MLOps-from-the-first-principles">DDODS — MLOps from First Principles</a>
+<h4><code>🎥</code> 2️⃣ Start the Theory Track</h4>
+<a href="https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu">MLOps from First Principles</a>
 </td>
 <td width="34%" align="center">
-<h4><code>🏗️</code> 3️⃣ Build the System</h4>
-<a href="https://github.com/SAIR-Org/SAiRCAMP_1">SAIRCAMP MLOps — End to End</a>
+<h4><code>🏗️</code> 3️⃣ Follow the Live Builds</h4>
+SAIRCAMP repos linked above,<br/>unlocked as each project releases
 </td>
 </tr>
 </table>
@@ -304,32 +322,34 @@ We're not going to hand you invented statistics about job placement — this tra
 </div>
 
 ```bash
-# Clone the hub repo (this one)
+# This repo is the map — clone it for the navigation and concept guides
 git clone https://github.com/SAIR-Org/SAiR-MLOps-Blueprint.git
-cd SAiR-MLOps-Blueprint
 
-# Initialize and update submodules (DDODS + SAiRCAMP)
-git submodule update --init --recursive
-
-# Now you have both tracks locally:
-#   ./DDODS/     → MLOps from First Principles (theory)
-#   ./SAiRCAMP/  → SAIRCAMP MLOps (end-to-end implementation)
-
-# To update submodules to their latest versions:
-git submodule update --remote
+# Each SAIRCAMP project ships in its own repo once released, e.g.
+git clone https://github.com/SAIR-Org/<saircamp-project-repo>.git
 ```
 
 ---
 
 ## 📚 **Where This Fits in SAIR Jr.**
 
-```
-Module 4 — Applied Deep Learning     ✅   github.com/SAIR-Org/SAIR_Jr
-Module 5 — GPT from Scratch          ✅   github.com/SAIR-Org/SAIR_Jr
-Module 6 — MLOps  ← you are here          github.com/SAIR-Org/SAiR-MLOps-Blueprint
-  ├── DDODS                         (theory, standalone repo)
-  └── SAIRCAMP                      (live builds, standalone repo)
-Capstone — Real-World Impact Project      github.com/SAIR-Org/SAIR_Jr
+```mermaid
+flowchart TD
+    M4["Module 4 - Applied Deep Learning<br/>SAIR-Org/SAIR_Jr"] --> M5["Module 5 - GPT from Scratch<br/>SAIR-Org/SAIR_Jr"]
+    M5 --> M6["Module 6 - MLOps - you are here<br/>SAIR-Org/SAiR-MLOps-Blueprint"]
+
+    M6 --> FP["MLOps from First Principles<br/>theory, parallel track"]
+    M6 --> SC["SAIRCAMP<br/>live builds, parallel track"]
+
+    FP --> Cap["Capstone - Real-World Impact Project<br/>SAIR-Org/SAIR_Jr"]
+    SC --> Cap
+
+    classDef done fill:#238636,color:#fff
+    classDef current fill:#d29922,color:#000
+    classDef next fill:#6e7681,color:#fff
+    class M4,M5 done
+    class M6,FP,SC current
+    class Cap next
 ```
 
 Module 6 is where everything from Modules 0-5 stops being *"a model in a notebook"* and becomes something a team could actually run. Head back to [SAIR_Jr](https://github.com/SAIR-Org/SAIR_Jr) for the rest of the track and the capstone.
@@ -338,10 +358,7 @@ Module 6 is where everything from Modules 0-5 stops being *"a model in a noteboo
 
 <div align="center">
 
-**License:** MIT | **Status:** ✅ Available
-
-[SAIR Initiative](https://github.com/SAIR-Org) · [Telegram](https://t.me/sair19969) · [YouTube](https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu)
-
+**License:** MIT | **Status:** 🔜 Incoming
 **Building Sudan's AI Future, One Production System at a Time 🇸🇩✨**
 
 </div>
