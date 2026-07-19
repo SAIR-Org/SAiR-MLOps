@@ -27,7 +27,7 @@
 </tr>
 </table>
 
-**Duration:** 6-8 weeks · **Prerequisite:** [SAIR Jr. Modules 0-5](https://github.com/SAIR-Org/SAIR_Jr) · **Format:** Theory playlist + live cohort builds
+**Duration:** 6-8 weeks · **Prerequisite:** [SAIR Jr. Modules 0-5](https://github.com/SAIR-Org/SAIR_Jr) · **Format:** Theory playlist + live cohort builds + required reading (+ optional proof-of-skill challenge)
 
 </div>
 
@@ -38,10 +38,12 @@
 - [🎯 The Problem With How MLOps Is Usually Taught](#-the-problem-with-how-mlops-is-usually-taught)
 - [🗺️ Quick Navigation](#️-quick-navigation)
 - [⚡ Why Two Tracks, Not One](#-why-two-tracks-not-one)
+- [📅 Optional Track — Prove It: 100 Days of MLOps](#-optional-track--prove-it-100-days-of-mlops)
 - [🏗️ SAIRCAMP Is a Series, Not a Single System](#️-saircamp-is-a-series-not-a-single-system)
 - [🚕 A Closer Look — Project 1: SAIRCAMP MLOps](#-a-closer-look--project-1-saircamp-mlops)
 - [🛠️ Technology Stack You'll Master](#️-technology-stack-youll-master)
 - [💼 What You Walk Away Able to Do](#-what-you-walk-away-able-to-do)
+- [📖 Required Reading](#-required-reading)
 - [🎓 Module 6 Completion Requirements](#-module-6-completion-requirements)
 - [🚀 Getting Started](#-getting-started)
 - [📚 Where This Fits in SAIR Jr.](#-where-this-fits-in-sair-jr)
@@ -68,6 +70,7 @@ Most courses respond to this by teaching you **tool syntax in isolation**: here'
 | 🏗️ SAIRCAMP — Project 1: Classical ML | Live cohort, released week by week | Repo 🔒 not public yet | ✅ Built |
 | 🧠 SAIRCAMP — Project 2: Deep Learning | Live cohort, revealed lecture by lecture | Repo 🔜 TBA | ✅ Built |
 | 📄 SAIRCAMP — Project 3: Document Intelligence | Live cohort, scope TBA | Repo 🔜 Coming | 📝 Planned |
+| 📅 *(Optional)* 100 Days of MLOps | Self-paced daily tasks, auto-validated | [KodeKloud](https://kodekloud.com/100-days-of-mlops) | ✅ Available (external, free) |
 
 > This repo (`SAiR-MLOps-Blueprint`) is the hub — it maps the whole module and links out to every resource. It is **not** where the code lives; each SAIRCAMP project ships in its own repo, linked here as it's released.
 
@@ -109,6 +112,34 @@ flowchart LR
 ```
 
 **Recommended order:** watch the matching lecture in *First Principles* before the live build session in *SAIRCAMP* — the video gives you the mental model before you're in the weeds wiring Docker networks together.
+
+---
+
+## 📅 **Optional Track — Prove It: 100 Days of MLOps**
+
+The two tracks above are what teach you MLOps. This one doesn't teach you anything new — it's where you go to **prove, publicly, that it stuck.**
+
+**[100 Days of MLOps](https://kodekloud.com/100-days-of-mlops)** (KodeKloud) is a free challenge of 100 short, auto-validated, hands-on tasks across the MLOps stack — data versioning, experiment tracking, orchestration, model serving, monitoring, GPU training, canary deploys, GitOps, and more.
+
+```mermaid
+flowchart LR
+    FP["First Principles<br/>why does this exist?"] --> SC["SAIRCAMP<br/>how do I build the whole thing?"]
+    SC --> HD["100 Days of MLOps<br/>optional, but recommended:<br/>public proof of skill"]
+
+    style FP fill:#e3f2fd,stroke:#1565c0,color:#000
+    style SC fill:#fff3e0,stroke:#e65100,color:#000
+    style HD fill:#e8f5e9,stroke:#2e7d32,color:#000
+```
+
+**Where it fits:** it comes *after* you already know the material from SAIRCAMP and First Principles — think of it less as a learning track and more as a public record you hand to a hiring manager. SAIRCAMP gives you one deep, real system you built once. 100 Days of MLOps gives you 100 completed, independently-validated tasks and a KodeKloud verified badge sitting next to it — evidence you can point to that isn't just "trust me, I built this."
+
+**Why it's optional but highly recommended:**
+- **It's proof, not just practice** — every task is auto-validated, so "I completed 100 Days of MLOps" isn't a self-graded claim. It's the closest thing to a receipt for your skills that a recruiter or hiring manager can actually check.
+- **Zero setup cost** — every environment is provisioned for you, no local installs, no VPS bill. Nothing stopping you from starting the day you finish SAIRCAMP.
+- **Broadens what you can point to in an interview** — it touches tools SAIRCAMP's NYC Taxi build doesn't go deep on (e.g. DVC, Feast, Argo Workflows, Kubernetes-based canary deploys), so it lets you say "I've also worked with X" beyond the one project.
+- **Free** — no cost, no reason not to do it once you've completed the required tracks.
+
+It's optional because SAIRCAMP + First Principles + the required reading are what the module actually certifies you on. But if you're serious about the job search, treat this as strongly recommended, not an afterthought.
 
 ---
 
@@ -271,6 +302,22 @@ We're not going to hand you invented statistics about job placement — this tra
 
 ---
 
+## 📖 **Required Reading**
+
+<div align="center">
+<a href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/">
+<img src="https://covers.openlibrary.org/b/isbn/9781098107963-L.jpg" alt="Designing Machine Learning Systems by Chip Huyen — cover" width="180"/>
+</a>
+</div>
+
+**[*Designing Machine Learning Systems*](https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/) by Chip Huyen** — required for Module 6, not optional.
+
+Where First Principles and SAIRCAMP teach you *how to build and operate* one real system, this book is the missing layer above both: the design reasoning for *why* production ML systems end up shaped the way they do — data distribution shifts, train/serve skew, feature stores, monitoring strategy, and the org-level tradeoffs behind each decision. It gives you vocabulary and mental models for choices SAIRCAMP makes concretely (why a feature store, why batch vs. online scoring, why a model registry) instead of leaving you to reverse-engineer the reasoning from the code alone.
+
+**How to read it for this module:** pair chapters with whatever you're currently building rather than reading cover to cover before starting — e.g. the monitoring/drift chapter around SAIRCAMP Module 5. You should have finished the book by the time you complete SAIRCAMP Project 1; being able to explain its concepts is part of what "completing" Module 6 means.
+
+---
+
 ## 🎓 **Module 6 Completion Requirements**
 
 <table>
@@ -280,6 +327,7 @@ We're not going to hand you invented statistics about job placement — this tra
 **📚 Technical Excellence**
 - ✅ Watch the full *MLOps from First Principles* playlist
 - ✅ Complete SAIRCAMP Project 1 (Classical ML) end to end
+- ✅ Read *Designing Machine Learning Systems* (Chip Huyen) and be able to discuss its concepts
 - ✅ Reproduce the production deploy: Docker Compose → VPS → nginx + HTTPS + CI/CD
 - ✅ Explain, for every tool used, what failure mode it exists to solve
 
@@ -296,6 +344,8 @@ We're not going to hand you invented statistics about job placement — this tra
 </tr>
 </table>
 
+> The 100 Days of MLOps track is the one optional piece here — recommended as proof of skill for your portfolio/interviews, but it is **not** a graded component of Module 6. Everything else on this page (both tracks, the book, the deploy) is required.
+
 ---
 
 ## 🚀 **Getting Started**
@@ -304,17 +354,21 @@ We're not going to hand you invented statistics about job placement — this tra
 
 <table>
 <tr>
-<td width="33%" align="center">
+<td width="25%" align="center">
 <h4><code>👥</code> 1️⃣ Join the Cohort</h4>
 <a href="https://t.me/sair19969">Telegram: t.me/sair19969</a>
 </td>
-<td width="33%" align="center">
+<td width="25%" align="center">
 <h4><code>🎥</code> 2️⃣ Start the Theory Track</h4>
 <a href="https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu">MLOps from First Principles</a>
 </td>
-<td width="34%" align="center">
+<td width="25%" align="center">
 <h4><code>🏗️</code> 3️⃣ Follow the Live Builds</h4>
 SAIRCAMP repos linked above,<br/>unlocked as each project releases
+</td>
+<td width="25%" align="center">
+<h4><code>📅</code> 4️⃣ (Optional) Prove It</h4>
+<a href="https://kodekloud.com/100-days-of-mlops">100 Days of MLOps</a><br/><sub>free, do it after 1-3, highly recommended</sub>
 </td>
 </tr>
 </table>
@@ -338,17 +392,23 @@ flowchart TD
     M4["Module 4 - Applied Deep Learning<br/>SAIR-Org/SAIR_Jr"] --> M5["Module 5 - GPT from Scratch<br/>SAIR-Org/SAIR_Jr"]
     M5 --> M6["Module 6 - MLOps - you are here<br/>SAIR-Org/SAiR-MLOps-Blueprint"]
 
-    M6 --> FP["MLOps from First Principles<br/>theory, parallel track"]
-    M6 --> SC["SAIRCAMP<br/>live builds, parallel track"]
+    M6 --> FP["MLOps from First Principles<br/>theory, required"]
+    M6 --> SC["SAIRCAMP<br/>live builds, required"]
+    M6 --> BK["Designing ML Systems<br/>Chip Huyen, required reading"]
 
     FP --> Cap["Capstone - Real-World Impact Project<br/>SAIR-Org/SAIR_Jr"]
+    SC --> HD["100 Days of MLOps<br/>optional, recommended: proof of skill"]
     SC --> Cap
+    BK --> Cap
+    HD -.strengthens portfolio for.-> Cap
 
     classDef done fill:#238636,color:#fff
     classDef current fill:#d29922,color:#000
+    classDef optional fill:#6e7681,color:#fff,stroke-dasharray: 5 5
     classDef next fill:#6e7681,color:#fff
     class M4,M5 done
-    class M6,FP,SC current
+    class M6,FP,SC,BK current
+    class HD optional
     class Cap next
 ```
 
